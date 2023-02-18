@@ -1,3 +1,4 @@
+import { FindAccountByEmail } from "../../../domain/useCases/account/find-account-by-email";
 import { InvalidBody } from "../../errors/invalid-body-error";
 import { badRequest, serverError } from "../../helpers/http-helper";
 import {
@@ -10,7 +11,8 @@ import { CreateAccountDTO } from "./DTOs/create-account-dto";
 
 export class CreateAccountController implements Controller {
   constructor(
-    private readonly validator: Validator //private readonly findByEmail: FindAccountByEmail, //createAccout: CreateAccount
+    private readonly validator: Validator,
+    private readonly findAccountByEmail: FindAccountByEmail //createAccout: CreateAccount
   ) {}
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
@@ -25,7 +27,7 @@ export class CreateAccountController implements Controller {
       if (bodyErrors) {
         return badRequest(new InvalidBody(bodyErrors));
       }
-
+      await this.findAccountByEmail.findByEmail(createAccoutDTO.email);
       return {} as unknown as HttpResponse;
     } catch {
       return serverError();
