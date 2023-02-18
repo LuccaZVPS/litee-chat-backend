@@ -31,6 +31,12 @@ export const forbidden = (data: any) => {
     statusCode: 403,
   };
 };
+export const conflict = (data: any) => {
+  return {
+    body: data,
+    statusCode: 409,
+  };
+};
 export const serverError = () => ({
   statusCode: 500,
   body: new ServerError(),
