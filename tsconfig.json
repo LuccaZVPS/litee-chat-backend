@@ -4,6 +4,7 @@
     "module": "CommonJS",
     "target": "es2019",
     "esModuleInterop": true,
+    "experimentalDecorators": true,
     "sourceMap": true,
     "rootDirs": ["src", "tests"],
     "baseUrl": "src",
