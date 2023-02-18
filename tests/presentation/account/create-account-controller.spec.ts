@@ -2,8 +2,10 @@ import { CreateAccountController } from "../../../src/presentation/controllers/a
 import { Validator } from "../../../src/presentation/protocols/validator";
 import { InvalidBody } from "../../../src/presentation/errors/invalid-body-error";
 import { createDTO } from "./mocks/create-dto";
-import { badRequest } from "../../../src/presentation/helpers/http-helper";
-
+import {
+  badRequest,
+  serverError,
+} from "../../../src/presentation/helpers/http-helper";
 describe("Create Account Controller", () => {
   const createValidatorStub = () => {
     class ValidatorStub implements Validator {
@@ -35,5 +37,14 @@ describe("Create Account Controller", () => {
     const dto = createDTO;
     const response = await sut.handle({ body: { ...dto } });
     expect(response).toEqual(badRequest(new InvalidBody("any_error")));
+  });
+  test("should return serverError if validate throws", async () => {
+    const { sut, validatorStub } = makeSut();
+    jest.spyOn(validatorStub, "validate").mockImplementationOnce(async () => {
+      throw new Error();
+    });
+    const dto = createDTO;
+    const response = await sut.handle({ body: { ...dto } });
+    expect(response).toEqual(serverError());
   });
 });
