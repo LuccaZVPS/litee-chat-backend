@@ -7,6 +7,11 @@ import {
   MinLength,
 } from "class-validator";
 export class CreateAccountDTO {
+  constructor() {
+    this.email = "";
+    this.name = "";
+    this.password = "";
+  }
   @IsNotEmpty()
   @IsString()
   @IsEmail()
