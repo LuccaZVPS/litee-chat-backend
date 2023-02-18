@@ -4,16 +4,18 @@ import { InvalidBody } from "../../../src/presentation/errors/invalid-body-error
 import { createDTO } from "./mocks/create-dto";
 import {
   badRequest,
+  conflict,
   serverError,
 } from "../../../src/presentation/helpers/http-helper";
 import { FindAccountByEmail } from "../../../src/domain/useCases/account/find-account-by-email";
 import { AccountModel } from "../../../src/domain/models/account";
 import { anyAccount } from "./mocks/fake-account";
+import { UsedEmailError } from "../../../src/presentation/errors/used-email-error";
 describe("Create Account Controller", () => {
   const makeFinByEmailStub = () => {
     class FindByEmailStub implements FindAccountByEmail {
-      async findByEmail(email: string): Promise<AccountModel> {
-        return anyAccount;
+      async findByEmail(): Promise<AccountModel | void> {
+        return;
       }
     }
     return new FindByEmailStub();
@@ -66,5 +68,16 @@ describe("Create Account Controller", () => {
     const dto = createDTO;
     await sut.handle({ body: { ...dto } });
     expect(spy).toBeCalledWith(dto.email);
+  });
+  test("should return conflict if findByEmail returns an account", async () => {
+    const { sut, findByEmailStub } = makeSut();
+    jest
+      .spyOn(findByEmailStub, "findByEmail")
+      .mockImplementationOnce(async () => {
+        return anyAccount;
+      });
+    const dto = createDTO;
+    const response = await sut.handle({ body: { ...dto } });
+    expect(response).toEqual(conflict(new UsedEmailError()));
   });
 });
