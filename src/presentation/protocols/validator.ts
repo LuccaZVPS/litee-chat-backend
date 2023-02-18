@@ -1,3 +1,3 @@
 export interface Validator {
-  validate(data: any): Promise<{ Error: string }>;
+  validate(data: any): Promise<{ errors: string }>;
 }
