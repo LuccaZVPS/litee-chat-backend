@@ -6,8 +6,19 @@ import {
   badRequest,
   serverError,
 } from "../../../src/presentation/helpers/http-helper";
+import { FindAccountByEmail } from "../../../src/domain/useCases/account/find-account-by-email";
+import { AccountModel } from "../../../src/domain/models/account";
+import { anyAccount } from "./mocks/fake-account";
 describe("Create Account Controller", () => {
-  const createValidatorStub = () => {
+  const makeFinByEmailStub = () => {
+    class FindByEmailStub implements FindAccountByEmail {
+      async findByEmail(email: string): Promise<AccountModel> {
+        return anyAccount;
+      }
+    }
+    return new FindByEmailStub();
+  };
+  const makeValidatorStub = () => {
     class ValidatorStub implements Validator {
       async validate(): Promise<{ errors: string }> {
         return { errors: "" };
@@ -16,10 +27,12 @@ describe("Create Account Controller", () => {
     return new ValidatorStub();
   };
   const makeSut = () => {
-    const validatorStub = createValidatorStub();
+    const validatorStub = makeValidatorStub();
+    const findByEmailStub = makeFinByEmailStub();
     return {
       validatorStub,
-      sut: new CreateAccountController(validatorStub),
+      findByEmailStub,
+      sut: new CreateAccountController(validatorStub, findByEmailStub),
     };
   };
   test("should call validate method with correct values", async () => {
@@ -46,5 +59,12 @@ describe("Create Account Controller", () => {
     const dto = createDTO;
     const response = await sut.handle({ body: { ...dto } });
     expect(response).toEqual(serverError());
+  });
+  test("should call findByEmail method with correct value", async () => {
+    const { sut, findByEmailStub } = makeSut();
+    const spy = jest.spyOn(findByEmailStub, "findByEmail");
+    const dto = createDTO;
+    await sut.handle({ body: { ...dto } });
+    expect(spy).toBeCalledWith(dto.email);
   });
 });
