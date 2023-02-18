@@ -1,6 +1,7 @@
 import { FindAccountByEmail } from "../../../domain/useCases/account/find-account-by-email";
 import { InvalidBody } from "../../errors/invalid-body-error";
-import { badRequest, serverError } from "../../helpers/http-helper";
+import { UsedEmailError } from "../../errors/used-email-error";
+import { badRequest, conflict, serverError } from "../../helpers/http-helper";
 import {
   Controller,
   HttpRequest,
@@ -27,7 +28,12 @@ export class CreateAccountController implements Controller {
       if (bodyErrors) {
         return badRequest(new InvalidBody(bodyErrors));
       }
-      await this.findAccountByEmail.findByEmail(createAccoutDTO.email);
+      const emailAlreadyTaken = await this.findAccountByEmail.findByEmail(
+        createAccoutDTO.email
+      );
+      if (emailAlreadyTaken) {
+        return conflict(new UsedEmailError());
+      }
       return {} as unknown as HttpResponse;
     } catch {
       return serverError();
