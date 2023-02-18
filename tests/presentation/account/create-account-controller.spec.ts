@@ -11,6 +11,7 @@ import { FindAccountByEmail } from "../../../src/domain/useCases/account/find-ac
 import { AccountModel } from "../../../src/domain/models/account";
 import { anyAccount } from "./mocks/fake-account";
 import { UsedEmailError } from "../../../src/presentation/errors/used-email-error";
+import { ServerError } from "../../../src/presentation/errors/server-error";
 describe("Create Account Controller", () => {
   const makeFinByEmailStub = () => {
     class FindByEmailStub implements FindAccountByEmail {
@@ -79,5 +80,16 @@ describe("Create Account Controller", () => {
     const dto = createDTO;
     const response = await sut.handle({ body: { ...dto } });
     expect(response).toEqual(conflict(new UsedEmailError()));
+  });
+  test("should return server error if findByEmail method throws", async () => {
+    const { sut, findByEmailStub } = makeSut();
+    jest
+      .spyOn(findByEmailStub, "findByEmail")
+      .mockImplementationOnce(async () => {
+        throw new Error();
+      });
+    const dto = createDTO;
+    const response = await sut.handle({ body: { ...dto } });
+    expect(response).toEqual(serverError());
   });
 });
