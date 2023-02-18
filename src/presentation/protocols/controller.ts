@@ -1,10 +1,10 @@
 export interface Controller {
   handle(httpRequest: HttpRequest): Promise<HttpResponse>;
 }
-interface HttpRequest {
+export interface HttpRequest {
   body?: any;
 }
-interface HttpResponse {
+export interface HttpResponse {
   body?: any;
   statusCode: number;
 }
