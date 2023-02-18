@@ -1,9 +1,11 @@
+import { InvalidBody } from "../../errors/invalid-body-error";
+import { badRequest } from "../../helpers/http-helper";
 import {
   Controller,
   HttpRequest,
   HttpResponse,
-} from "@/presentation/protocols/controller";
-import { Validator } from "@/presentation/protocols/validator";
+} from "../../protocols/controller";
+import { Validator } from "../../protocols/validator";
 import { CreateAccountDTO } from "./DTOs/create-account-dto";
 
 export class CreateAccountController implements Controller {
@@ -17,7 +19,10 @@ export class CreateAccountController implements Controller {
         createAccoutDTO[prop] = httpRequest.body[prop];
       }
     }
-    await this.validator.validate(createAccoutDTO);
+    const bodyErrors = (await this.validator.validate(createAccoutDTO)).errors;
+    if (bodyErrors) {
+      return badRequest(new InvalidBody(bodyErrors));
+    }
 
     return {} as unknown as HttpResponse;
   }
