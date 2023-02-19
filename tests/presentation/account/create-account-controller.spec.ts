@@ -5,6 +5,7 @@ import { createDTO } from "./mocks/create-dto";
 import {
   badRequest,
   conflict,
+  created,
   serverError,
 } from "../../../src/presentation/helpers/http-helper";
 import { FindAccountByEmail } from "../../../src/domain/useCases/account/find-account-by-email";
@@ -121,5 +122,11 @@ describe("Create Account Controller", () => {
     const dto = createDTO;
     const response = await sut.handle({ body: { ...dto } });
     expect(response).toEqual(serverError());
+  });
+  test("should return created", async () => {
+    const { sut } = makeSut();
+    const dto = createDTO;
+    const response = await sut.handle({ body: { ...dto } });
+    expect(response).toEqual(created(""));
   });
 });
