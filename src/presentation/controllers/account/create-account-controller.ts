@@ -1,3 +1,4 @@
+import { CreateAccount } from "../../../domain/useCases/account/create-account";
 import { FindAccountByEmail } from "../../../domain/useCases/account/find-account-by-email";
 import { InvalidBody } from "../../errors/invalid-body-error";
 import { UsedEmailError } from "../../errors/used-email-error";
@@ -13,7 +14,8 @@ import { CreateAccountDTO } from "./DTOs/create-account-dto";
 export class CreateAccountController implements Controller {
   constructor(
     private readonly validator: Validator,
-    private readonly findAccountByEmail: FindAccountByEmail //createAccout: CreateAccount
+    private readonly findAccountByEmail: FindAccountByEmail,
+    private readonly createAccout: CreateAccount
   ) {}
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
@@ -34,6 +36,7 @@ export class CreateAccountController implements Controller {
       if (emailAlreadyTaken) {
         return conflict(new UsedEmailError());
       }
+      await this.createAccout.create(createAccoutDTO);
       return {} as unknown as HttpResponse;
     } catch {
       return serverError();
