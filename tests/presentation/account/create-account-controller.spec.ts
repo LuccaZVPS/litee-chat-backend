@@ -148,4 +148,13 @@ describe("Create Account Controller", () => {
     await sut.handle({ body: { ...dto } });
     expect(spy).toBeCalledWith(dto.email, dto.name, "any_id");
   });
+  test("should return server error if sendEmail method throws", async () => {
+    const { sut, sendEmailStub } = makeSut();
+    jest.spyOn(sendEmailStub, "send").mockImplementationOnce(() => {
+      throw new Error();
+    });
+    const dto = createDTO;
+    const response = await sut.handle({ body: { ...dto } });
+    expect(response).toEqual(serverError());
+  });
 });
