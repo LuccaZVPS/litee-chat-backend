@@ -13,11 +13,20 @@ import { AccountModel } from "../../../src/domain/models/account";
 import { anyAccount } from "./mocks/fake-account";
 import { UsedEmailError } from "../../../src/presentation/errors/used-email-error";
 import { CreateAccount } from "../../../src/domain/useCases/account/create-account";
+import { SendEmail } from "../../../src/presentation/protocols/send-email";
 describe("Create Account Controller", () => {
+  const makeSendEmailStub = () => {
+    class SendEmailStub implements SendEmail {
+      send(): void {
+        return;
+      }
+    }
+    return new SendEmailStub();
+  };
   const makeCreateAccountStub = () => {
     class CreateAccountStub implements CreateAccount {
-      create(): Promise<void> {
-        return;
+      async create(): Promise<{ _id: string }> {
+        return { _id: "any_id" };
       }
     }
     return new CreateAccountStub();
@@ -42,14 +51,17 @@ describe("Create Account Controller", () => {
     const validatorStub = makeValidatorStub();
     const findByEmailStub = makeFinByEmailStub();
     const createAccountStub = makeCreateAccountStub();
+    const sendEmailStub = makeSendEmailStub();
     return {
       createAccountStub,
       validatorStub,
       findByEmailStub,
+      sendEmailStub,
       sut: new CreateAccountController(
         validatorStub,
         findByEmailStub,
-        createAccountStub
+        createAccountStub,
+        sendEmailStub
       ),
     };
   };
@@ -128,5 +140,12 @@ describe("Create Account Controller", () => {
     const dto = createDTO;
     const response = await sut.handle({ body: { ...dto } });
     expect(response).toEqual(created(""));
+  });
+  test("should call send email method with correct value", async () => {
+    const { sut, sendEmailStub } = makeSut();
+    const spy = jest.spyOn(sendEmailStub, "send");
+    const dto = createDTO;
+    await sut.handle({ body: { ...dto } });
+    expect(spy).toBeCalledWith(dto.email, dto.name, "any_id");
   });
 });
