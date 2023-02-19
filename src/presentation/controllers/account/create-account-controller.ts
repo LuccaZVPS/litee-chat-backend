@@ -2,7 +2,12 @@ import { CreateAccount } from "../../../domain/useCases/account/create-account";
 import { FindAccountByEmail } from "../../../domain/useCases/account/find-account-by-email";
 import { InvalidBody } from "../../errors/invalid-body-error";
 import { UsedEmailError } from "../../errors/used-email-error";
-import { badRequest, conflict, serverError } from "../../helpers/http-helper";
+import {
+  badRequest,
+  conflict,
+  created,
+  serverError,
+} from "../../helpers/http-helper";
 import {
   Controller,
   HttpRequest,
@@ -37,7 +42,7 @@ export class CreateAccountController implements Controller {
         return conflict(new UsedEmailError());
       }
       await this.createAccout.create(createAccoutDTO);
-      return {} as unknown as HttpResponse;
+      return created("");
     } catch {
       return serverError();
     }
