@@ -1,4 +1,6 @@
 import { EmailVerifyController } from "../../../src/presentation/controllers/account/email-verify-controller";
+import { InvalidBody } from "../../../src/presentation/errors/invalid-body-error";
+import { badRequest } from "../../../src/presentation/helpers/http-helper";
 import { Validator } from "../../../src/presentation/protocols/validator";
 
 describe("Verify email controller", () => {
@@ -26,5 +28,13 @@ describe("Verify email controller", () => {
     const spy = jest.spyOn(validatorStub, "validate");
     await sut.handle({ body: verifyEmailDTO });
     expect(spy).toHaveBeenCalledWith({ ...verifyEmailDTO });
+  });
+  test("should return badRequest with invalidBody error", async () => {
+    const { sut, validatorStub } = makeSut();
+    jest.spyOn(validatorStub, "validate").mockImplementationOnce(async () => {
+      return { errors: "any_error" };
+    });
+    const response = await sut.handle({ body: { ...verifyEmailDTO } });
+    expect(response).toEqual(badRequest(new InvalidBody("any_error")));
   });
 });
