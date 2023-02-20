@@ -1,3 +1,5 @@
+import { InvalidBody } from "../../errors/invalid-body-error";
+import { badRequest } from "../../helpers/http-helper";
 import {
   Controller,
   HttpRequest,
@@ -14,7 +16,10 @@ export class EmailVerifyController implements Controller {
         verifyEmailDTO[field] = httpRequest.body[field];
       }
     }
-    await this.validator.validate(verifyEmailDTO);
+    const { errors } = await this.validator.validate(verifyEmailDTO);
+    if (errors) {
+      return badRequest(new InvalidBody(errors));
+    }
     return { statusCode: 0, body: "" };
   }
 }
