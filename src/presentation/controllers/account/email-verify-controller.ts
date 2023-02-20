@@ -1,6 +1,11 @@
 import { EmailVerify } from "../../../domain/useCases/account/email-verify";
 import { InvalidBody } from "../../errors/invalid-body-error";
-import { badRequest, forbidden, serverError } from "../../helpers/http-helper";
+import {
+  badRequest,
+  forbidden,
+  ok,
+  serverError,
+} from "../../helpers/http-helper";
 import {
   Controller,
   HttpRequest,
@@ -32,7 +37,7 @@ export class EmailVerifyController implements Controller {
       if (!verified) {
         return forbidden("");
       }
-      return { statusCode: 0, body: "" };
+      return ok("email verified");
     } catch {
       return serverError();
     }
