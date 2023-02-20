@@ -1,6 +1,6 @@
 import { EmailVerify } from "../../../domain/useCases/account/email-verify";
 import { InvalidBody } from "../../errors/invalid-body-error";
-import { badRequest, serverError } from "../../helpers/http-helper";
+import { badRequest, forbidden, serverError } from "../../helpers/http-helper";
 import {
   Controller,
   HttpRequest,
@@ -25,10 +25,13 @@ export class EmailVerifyController implements Controller {
       if (errors) {
         return badRequest(new InvalidBody(errors));
       }
-      await this.emailVerify.verify(
+      const verified = await this.emailVerify.verify(
         verifyEmailDTO._id,
         verifyEmailDTO.password
       );
+      if (!verified) {
+        return forbidden("");
+      }
       return { statusCode: 0, body: "" };
     } catch {
       return serverError();
