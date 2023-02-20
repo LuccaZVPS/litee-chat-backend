@@ -4,6 +4,7 @@ import { InvalidBody } from "../../../src/presentation/errors/invalid-body-error
 import {
   badRequest,
   forbidden,
+  ok,
   serverError,
 } from "../../../src/presentation/helpers/http-helper";
 import { Validator } from "../../../src/presentation/protocols/validator";
@@ -74,7 +75,6 @@ describe("Verify email controller", () => {
     const response = await sut.handle({ body: { ...verifyEmailDTO } });
     expect(response).toEqual(forbidden(""));
   });
-
   test("should return server error if verify method throws", async () => {
     const { sut, emailVerifyStub } = makeSut();
     jest.spyOn(emailVerifyStub, "verify").mockImplementationOnce(async () => {
@@ -82,5 +82,11 @@ describe("Verify email controller", () => {
     });
     const response = await sut.handle({ body: { ...verifyEmailDTO } });
     expect(response).toEqual(serverError());
+  });
+  test("should return ok if verify method returns true", async () => {
+    const { sut } = makeSut();
+
+    const response = await sut.handle({ body: { ...verifyEmailDTO } });
+    expect(response).toEqual(ok("email verified"));
   });
 });
