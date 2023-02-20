@@ -74,4 +74,13 @@ describe("Verify email controller", () => {
     const response = await sut.handle({ body: { ...verifyEmailDTO } });
     expect(response).toEqual(forbidden(""));
   });
+
+  test("should return server error if verify method throws", async () => {
+    const { sut, emailVerifyStub } = makeSut();
+    jest.spyOn(emailVerifyStub, "verify").mockImplementationOnce(async () => {
+      throw new Error();
+    });
+    const response = await sut.handle({ body: { ...verifyEmailDTO } });
+    expect(response).toEqual(serverError());
+  });
 });
