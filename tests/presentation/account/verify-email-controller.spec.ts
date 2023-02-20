@@ -3,6 +3,7 @@ import { EmailVerifyController } from "../../../src/presentation/controllers/acc
 import { InvalidBody } from "../../../src/presentation/errors/invalid-body-error";
 import {
   badRequest,
+  forbidden,
   serverError,
 } from "../../../src/presentation/helpers/http-helper";
 import { Validator } from "../../../src/presentation/protocols/validator";
@@ -10,7 +11,7 @@ import { Validator } from "../../../src/presentation/protocols/validator";
 describe("Verify email controller", () => {
   const makeEmailVerifyStub = () => {
     class EmailVerifyStub implements EmailVerify {
-      async verify(_id: string, password: string): Promise<boolean> {
+      async verify(): Promise<boolean> {
         return true;
       }
     }
@@ -64,5 +65,13 @@ describe("Verify email controller", () => {
     const spy = jest.spyOn(emailVerifyStub, "verify");
     await sut.handle({ body: { ...verifyEmailDTO } });
     expect(spy).toBeCalledWith(verifyEmailDTO._id, verifyEmailDTO.password);
+  });
+  test("should return forbidden if verify method returns false", async () => {
+    const { sut, emailVerifyStub } = makeSut();
+    jest.spyOn(emailVerifyStub, "verify").mockImplementationOnce(async () => {
+      return false;
+    });
+    const response = await sut.handle({ body: { ...verifyEmailDTO } });
+    expect(response).toEqual(forbidden(""));
   });
 });
