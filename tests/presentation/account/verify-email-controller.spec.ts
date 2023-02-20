@@ -1,3 +1,4 @@
+import { EmailVerify } from "../../../src/domain/useCases/account/email-verify";
 import { EmailVerifyController } from "../../../src/presentation/controllers/account/email-verify-controller";
 import { InvalidBody } from "../../../src/presentation/errors/invalid-body-error";
 import {
@@ -7,6 +8,14 @@ import {
 import { Validator } from "../../../src/presentation/protocols/validator";
 
 describe("Verify email controller", () => {
+  const makeEmailVerifyStub = () => {
+    class EmailVerifyStub implements EmailVerify {
+      async verify(_id: string, password: string): Promise<boolean> {
+        return true;
+      }
+    }
+    return new EmailVerifyStub();
+  };
   const makeValidatorStub = () => {
     class ValidatorStub implements Validator {
       async validate(): Promise<{ errors: string }> {
@@ -17,9 +26,11 @@ describe("Verify email controller", () => {
   };
   const makeSut = () => {
     const validatorStub = makeValidatorStub();
+    const emailVerifyStub = makeEmailVerifyStub();
     return {
       validatorStub,
-      sut: new EmailVerifyController(validatorStub),
+      emailVerifyStub,
+      sut: new EmailVerifyController(validatorStub, emailVerifyStub),
     };
   };
   const verifyEmailDTO = {
@@ -47,5 +58,11 @@ describe("Verify email controller", () => {
     });
     const response = await sut.handle({ body: { ...verifyEmailDTO } });
     expect(response).toEqual(serverError());
+  });
+  test("should call verify method with correct values", async () => {
+    const { sut, emailVerifyStub } = makeSut();
+    const spy = jest.spyOn(emailVerifyStub, "verify");
+    await sut.handle({ body: { ...verifyEmailDTO } });
+    expect(spy).toBeCalledWith(verifyEmailDTO._id, verifyEmailDTO.password);
   });
 });
