@@ -8,7 +8,17 @@ import {
 import { FindAccountByEmail } from "../../../src/domain/useCases/account/find-account-by-email";
 import { AccountModel } from "../../../src/domain/models/account";
 import { UnauthorizedError } from "../../../src/presentation/errors/unauthorized-error";
+import { CompareHash } from "../../../src/presentation/protocols/compare-hash";
+import { anyAccount } from "./mocks/fake-account";
 describe("Authentication Controller", () => {
+  const makeCompareHashStub = () => {
+    class CompareHashStub implements CompareHash {
+      compare(): boolean {
+        return true;
+      }
+    }
+    return new CompareHashStub();
+  };
   const makeValidatorStub = () => {
     class ValidatorStub implements Validator {
       async validate(): Promise<{ errors: string }> {
@@ -28,10 +38,16 @@ describe("Authentication Controller", () => {
   const makeSut = () => {
     const findByEmailStub = makeFinByEmailStub();
     const validatorStub = makeValidatorStub();
+    const compareHashStub = makeCompareHashStub();
     return {
       validatorStub,
       findByEmailStub,
-      sut: new AuthenticationController(validatorStub, findByEmailStub),
+      compareHashStub,
+      sut: new AuthenticationController(
+        validatorStub,
+        findByEmailStub,
+        compareHashStub
+      ),
     };
   };
   const loginDTO = {
@@ -76,5 +92,19 @@ describe("Authentication Controller", () => {
     const dto = loginDTO;
     const response = await sut.handle({ body: { ...dto } });
     expect(response).toEqual(serverError());
+  });
+  test("should call compare method with correct values", async () => {
+    const { sut, compareHashStub, findByEmailStub } = makeSut();
+
+    const spy = jest.spyOn(compareHashStub, "compare");
+    const dto = loginDTO;
+    const accountFound = anyAccount;
+    jest
+      .spyOn(findByEmailStub, "findByEmail")
+      .mockImplementationOnce(async () => {
+        return accountFound;
+      });
+    await sut.handle({ body: { ...dto } });
+    expect(spy).toBeCalledWith(dto.password, accountFound.password);
   });
 });
