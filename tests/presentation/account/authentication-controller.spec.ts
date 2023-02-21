@@ -1,9 +1,13 @@
 import { AuthenticationController } from "../../../src/presentation/controllers/account/authentication-controller";
 import { faker } from "@faker-js/faker";
 import { Validator } from "../../../src/presentation/protocols/validator";
-import { serverError } from "../../../src/presentation/helpers/http-helper";
+import {
+  serverError,
+  unauthorized,
+} from "../../../src/presentation/helpers/http-helper";
 import { FindAccountByEmail } from "../../../src/domain/useCases/account/find-account-by-email";
 import { AccountModel } from "../../../src/domain/models/account";
+import { UnauthorizedError } from "../../../src/presentation/errors/unauthorized-error";
 describe("Authentication Controller", () => {
   const makeValidatorStub = () => {
     class ValidatorStub implements Validator {
@@ -56,5 +60,10 @@ describe("Authentication Controller", () => {
     const dto = loginDTO;
     await sut.handle({ body: { ...dto } });
     expect(spy).toBeCalledWith(dto.email);
+  });
+  test("should return unauthorized if findByEmail return void", async () => {
+    const { sut } = makeSut();
+    const response = await sut.handle({ body: { ...loginDTO } });
+    expect(response).toEqual(unauthorized(new UnauthorizedError()));
   });
 });
