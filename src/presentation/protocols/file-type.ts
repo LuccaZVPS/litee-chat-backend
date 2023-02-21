@@ -1,3 +1,3 @@
 export interface FileType {
-  type(): Promise<string>;
+  type(path: string): Promise<string>;
 }
