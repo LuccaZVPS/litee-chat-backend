@@ -31,10 +31,13 @@ export class AuthenticationController implements Controller {
       if (!accountFound) {
         return unauthorized(new UnauthorizedError());
       }
-      this.compareHash.compare(
+      const isValid = this.compareHash.compare(
         authenticationDTO.password,
         accountFound.password
       );
+      if (!isValid) {
+        return unauthorized(new UnauthorizedError());
+      }
       return { statusCode: 0, body: "" };
     } catch {
       return serverError();
