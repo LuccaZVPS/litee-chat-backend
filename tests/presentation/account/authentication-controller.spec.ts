@@ -66,4 +66,15 @@ describe("Authentication Controller", () => {
     const response = await sut.handle({ body: { ...loginDTO } });
     expect(response).toEqual(unauthorized(new UnauthorizedError()));
   });
+  test("should return serverError if findByEmail throws", async () => {
+    const { sut, findByEmailStub } = makeSut();
+    jest
+      .spyOn(findByEmailStub, "findByEmail")
+      .mockImplementationOnce(async () => {
+        throw new Error();
+      });
+    const dto = loginDTO;
+    const response = await sut.handle({ body: { ...dto } });
+    expect(response).toEqual(serverError());
+  });
 });
