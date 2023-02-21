@@ -107,4 +107,20 @@ describe("Authentication Controller", () => {
     await sut.handle({ body: { ...dto } });
     expect(spy).toBeCalledWith(dto.password, accountFound.password);
   });
+  test("should return unauthorized if compare method return false", async () => {
+    const { sut, compareHashStub, findByEmailStub } = makeSut();
+
+    jest.spyOn(compareHashStub, "compare").mockImplementationOnce(() => {
+      return false;
+    });
+    const dto = loginDTO;
+    const accountFound = anyAccount;
+    jest
+      .spyOn(findByEmailStub, "findByEmail")
+      .mockImplementationOnce(async () => {
+        return accountFound;
+      });
+    const respnse = await sut.handle({ body: { ...dto } });
+    expect(respnse).toEqual(unauthorized(new UnauthorizedError()));
+  });
 });
