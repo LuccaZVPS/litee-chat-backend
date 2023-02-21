@@ -2,6 +2,8 @@ import { AuthenticationController } from "../../../src/presentation/controllers/
 import { faker } from "@faker-js/faker";
 import { Validator } from "../../../src/presentation/protocols/validator";
 import { serverError } from "../../../src/presentation/helpers/http-helper";
+import { FindAccountByEmail } from "../../../src/domain/useCases/account/find-account-by-email";
+import { AccountModel } from "../../../src/domain/models/account";
 describe("Authentication Controller", () => {
   const makeValidatorStub = () => {
     class ValidatorStub implements Validator {
@@ -11,11 +13,21 @@ describe("Authentication Controller", () => {
     }
     return new ValidatorStub();
   };
+  const makeFinByEmailStub = () => {
+    class FindByEmailStub implements FindAccountByEmail {
+      async findByEmail(): Promise<AccountModel | void> {
+        return;
+      }
+    }
+    return new FindByEmailStub();
+  };
   const makeSut = () => {
+    const findByEmailStub = makeFinByEmailStub();
     const validatorStub = makeValidatorStub();
     return {
       validatorStub,
-      sut: new AuthenticationController(validatorStub),
+      findByEmailStub,
+      sut: new AuthenticationController(validatorStub, findByEmailStub),
     };
   };
   const loginDTO = {
@@ -37,5 +49,12 @@ describe("Authentication Controller", () => {
     const dto = loginDTO;
     const response = await sut.handle({ body: { ...dto } });
     expect(response).toEqual(serverError());
+  });
+  test("should call findByEmail method with correct values", async () => {
+    const { sut, findByEmailStub } = makeSut();
+    const spy = jest.spyOn(findByEmailStub, "findByEmail");
+    const dto = loginDTO;
+    await sut.handle({ body: { ...dto } });
+    expect(spy).toBeCalledWith(dto.email);
   });
 });
