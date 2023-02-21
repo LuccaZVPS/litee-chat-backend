@@ -1,6 +1,7 @@
 import { AuthenticationController } from "../../../src/presentation/controllers/account/authentication-controller";
 import { faker } from "@faker-js/faker";
 import { Validator } from "../../../src/presentation/protocols/validator";
+import { serverError } from "../../../src/presentation/helpers/http-helper";
 describe("Authentication Controller", () => {
   const makeValidatorStub = () => {
     class ValidatorStub implements Validator {
@@ -27,5 +28,14 @@ describe("Authentication Controller", () => {
     const dto = loginDTO;
     await sut.handle({ body: { ...dto } });
     expect(spy).toBeCalledWith(dto);
+  });
+  test("should return serverError if validate throws", async () => {
+    const { sut, validatorStub } = makeSut();
+    jest.spyOn(validatorStub, "validate").mockImplementationOnce(async () => {
+      throw new Error();
+    });
+    const dto = loginDTO;
+    const response = await sut.handle({ body: { ...dto } });
+    expect(response).toEqual(serverError());
   });
 });
