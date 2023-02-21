@@ -1,6 +1,6 @@
 import { FindAccountByEmail } from "../../../domain/useCases/account/find-account-by-email";
 import { UnauthorizedError } from "../../errors/unauthorized-error";
-import { serverError, unauthorized } from "../../helpers/http-helper";
+import { ok, serverError, unauthorized } from "../../helpers/http-helper";
 import { CompareHash } from "../../protocols/compare-hash";
 import {
   Controller,
@@ -38,7 +38,7 @@ export class AuthenticationController implements Controller {
       if (!isValid) {
         return unauthorized(new UnauthorizedError());
       }
-      return { statusCode: 0, body: "" };
+      return ok("logged in");
     } catch {
       return serverError();
     }
