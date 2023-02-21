@@ -1,5 +1,6 @@
 import { FindAccountByEmail } from "../../../domain/useCases/account/find-account-by-email";
-import { serverError } from "../../helpers/http-helper";
+import { UnauthorizedError } from "../../errors/unauthorized-error";
+import { serverError, unauthorized } from "../../helpers/http-helper";
 import {
   Controller,
   HttpRequest,
@@ -22,7 +23,12 @@ export class AuthenticationController implements Controller {
         }
       }
       await this.validator.validate(authenticationDTO);
-      await this.findAccountByEmail.findByEmail(authenticationDTO.email);
+      const accountFound = await this.findAccountByEmail.findByEmail(
+        authenticationDTO.email
+      );
+      if (!accountFound) {
+        return unauthorized(new UnauthorizedError());
+      }
       return { statusCode: 0, body: "" };
     } catch {
       return serverError();
