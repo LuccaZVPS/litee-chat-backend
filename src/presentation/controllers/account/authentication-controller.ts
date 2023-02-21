@@ -1,3 +1,4 @@
+import { serverError } from "../../helpers/http-helper";
 import {
   Controller,
   HttpRequest,
@@ -9,13 +10,17 @@ import { AuthenticationDTO } from "./DTOs/authentication-dto";
 export class AuthenticationController implements Controller {
   constructor(private readonly validator: Validator) {}
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
-    const authenticationDTO = new AuthenticationDTO();
-    for (const field in authenticationDTO) {
-      if (httpRequest?.body[field]) {
-        authenticationDTO[field] = httpRequest.body[field];
+    try {
+      const authenticationDTO = new AuthenticationDTO();
+      for (const field in authenticationDTO) {
+        if (httpRequest?.body[field]) {
+          authenticationDTO[field] = httpRequest.body[field];
+        }
       }
+      await this.validator.validate(authenticationDTO);
+      return { statusCode: 0, body: "" };
+    } catch {
+      return serverError();
     }
-    await this.validator.validate(authenticationDTO);
-    return { statusCode: 0, body: "" };
   }
 }
