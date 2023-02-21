@@ -2,6 +2,7 @@ import { AuthenticationController } from "../../../src/presentation/controllers/
 import { faker } from "@faker-js/faker";
 import { Validator } from "../../../src/presentation/protocols/validator";
 import {
+  ok,
   serverError,
   unauthorized,
 } from "../../../src/presentation/helpers/http-helper";
@@ -122,5 +123,17 @@ describe("Authentication Controller", () => {
       });
     const respnse = await sut.handle({ body: { ...dto } });
     expect(respnse).toEqual(unauthorized(new UnauthorizedError()));
+  });
+  test("should return ok if compare method return true", async () => {
+    const { sut, findByEmailStub } = makeSut();
+    const dto = loginDTO;
+    const accountFound = anyAccount;
+    jest
+      .spyOn(findByEmailStub, "findByEmail")
+      .mockImplementationOnce(async () => {
+        return accountFound;
+      });
+    const respnse = await sut.handle({ body: { ...dto } });
+    expect(respnse).toEqual(ok("logged in"));
   });
 });
