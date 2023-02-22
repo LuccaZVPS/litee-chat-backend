@@ -43,4 +43,13 @@ describe("Create Account", () => {
     await sut.create(dto);
     expect(spy).toHaveBeenCalledWith(dto.password);
   });
+  test("should throws if hash method throws", async () => {
+    const { sut, hashStub } = makeSut();
+    jest.spyOn(hashStub, "hash").mockImplementationOnce(() => {
+      throw new Error();
+    });
+    const dto = { ...createDTO };
+    const response = sut.create(dto);
+    expect(response).rejects.toThrow(new Error());
+  });
 });
