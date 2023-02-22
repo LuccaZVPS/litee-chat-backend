@@ -3,18 +3,25 @@ import { faker } from "@faker-js/faker";
 import { Validator } from "../../../src/presentation/protocols/validator";
 import {
   badRequest,
-  ok,
   serverError,
   unauthorized,
 } from "../../../src/presentation/helpers/http-helper";
 import { UnauthorizedError } from "../../../src/presentation/errors/unauthorized-error";
 import { Authentication } from "../../../src/domain/useCases/account/authentication";
 import { InvalidBody } from "../../../src/presentation/errors/invalid-body-error";
+import { AccountSession } from "../../../src/domain/useCases/account/create-account";
 describe("Authentication Controller", () => {
   const makeAuthenticationStub = () => {
     class AuthenticationStub implements Authentication {
-      async auth(): Promise<boolean> {
-        return true;
+      async auth(): Promise<false | AccountSession> {
+        return {
+          _id: "any_id",
+          email: "any_email",
+          name: "any_name",
+          friends: [],
+          imageURL: "",
+          requests: [],
+        };
       }
     }
     return new AuthenticationStub();
@@ -82,10 +89,18 @@ describe("Authentication Controller", () => {
     const respnse = await sut.handle({ body: { ...dto } });
     expect(respnse).toEqual(unauthorized(new UnauthorizedError()));
   });
-  test("should return ok if compare method return true", async () => {
+  test("should return ok with an account if compare method return true", async () => {
     const { sut } = makeSut();
     const dto = loginDTO;
     const respnse = await sut.handle({ body: { ...dto } });
-    expect(respnse).toEqual(ok("logged in"));
+    expect(respnse.body).toEqual({
+      _id: "any_id",
+      email: "any_email",
+      name: "any_name",
+      friends: [],
+      imageURL: "",
+      requests: [],
+    });
+    expect(respnse.statusCode).toBe(200);
   });
 });
