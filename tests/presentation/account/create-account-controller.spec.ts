@@ -12,7 +12,10 @@ import { FindAccountByEmail } from "../../../src/domain/useCases/account/find-ac
 import { AccountModel } from "../../../src/domain/models/account";
 import { anyAccount } from "./mocks/fake-account";
 import { UsedEmailError } from "../../../src/presentation/errors/used-email-error";
-import { CreateAccount } from "../../../src/domain/useCases/account/create-account";
+import {
+  AccountSession,
+  CreateAccount,
+} from "../../../src/domain/useCases/account/create-account";
 import { SendEmail } from "../../../src/presentation/protocols/send-email";
 describe("Create Account Controller", () => {
   const makeSendEmailStub = () => {
@@ -25,8 +28,15 @@ describe("Create Account Controller", () => {
   };
   const makeCreateAccountStub = () => {
     class CreateAccountStub implements CreateAccount {
-      async create(): Promise<{ _id: string }> {
-        return { _id: "any_id" };
+      async create(): Promise<AccountSession> {
+        return {
+          _id: "any_id",
+          email: "any_email",
+          name: "any_name",
+          friends: [],
+          imageURL: "",
+          requests: [],
+        };
       }
     }
     return new CreateAccountStub();
