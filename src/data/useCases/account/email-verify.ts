@@ -17,6 +17,5 @@ export class EmailVerify implements EmailVerifyType {
     }
     await this.emailVerifyRepository.verify(_id);
     return true;
-    return;
   }
 }
