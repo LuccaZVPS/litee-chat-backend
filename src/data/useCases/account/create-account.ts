@@ -12,10 +12,13 @@ export class CreateAccount implements CreateAccountType {
   ) {}
   async create(account: CreateAccountDTO): Promise<AccountSession> {
     const hashedPassword = this.hasher.hash(account.password);
-    await this.createAccountRepository.create({
+    const accountData = await this.createAccountRepository.create({
       ...account,
       password: hashedPassword,
     });
+    if (!accountData._id) {
+      throw new Error();
+    }
     return;
   }
 }
