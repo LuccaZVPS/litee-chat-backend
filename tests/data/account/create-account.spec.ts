@@ -70,4 +70,15 @@ describe("Create Account", () => {
     const response = sut.create(dto);
     expect(response).rejects.toThrow(new Error());
   });
+  test("should throws if create method dont return an account", () => {
+    const { sut, createAccountRepositoryStub } = makeSut();
+    jest
+      .spyOn(createAccountRepositoryStub, "create")
+      .mockImplementationOnce(async () => {
+        return {} as AccountSession;
+      });
+    const dto = { ...createDTO };
+    const response = sut.create(dto);
+    expect(response).rejects.toThrow(new Error());
+  });
 });
