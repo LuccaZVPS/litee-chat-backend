@@ -1,4 +1,7 @@
-import { UpdateImageController } from "../../../src/presentation/controllers/account/update-image-controller";
+import {
+  unlinkFile,
+  UpdateImageController,
+} from "../../../src/presentation/controllers/account/update-image-controller";
 import { InvalidBody } from "../../../src/presentation/errors/invalid-body-error";
 import {
   badRequest,
@@ -41,9 +44,22 @@ describe("Update image controller", () => {
     jest.spyOn(fileTypeStub, "type").mockImplementationOnce(async () => {
       return "pdf";
     });
+    jest.spyOn(unlinkFile, "unlink").mockImplementationOnce(() => {
+      return;
+    });
+
     const response = await sut.handle({ file: { path: "any_file_path" } });
     expect(response).toEqual(
       badRequest(new InvalidBody("file extension not allowed"))
     );
+  });
+  test("should call unlinkSync with correct path if file extension is not allowed", async () => {
+    const { sut, fileTypeStub } = makeSut();
+    jest.spyOn(fileTypeStub, "type").mockImplementationOnce(async () => {
+      return "pdf";
+    });
+    const spy = jest.spyOn(unlinkFile, "unlink");
+    await sut.handle({ file: { path: "./any_file_path" } });
+    expect(spy).toBeCalledWith("./any_file_path");
   });
 });
