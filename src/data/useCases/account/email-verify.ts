@@ -15,6 +15,7 @@ export class EmailVerify implements EmailVerifyType {
     if (secret !== password) {
       return false;
     }
+    await this.emailVerifyRepository.verify(_id);
     return;
   }
 }
