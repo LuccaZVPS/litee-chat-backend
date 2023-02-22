@@ -59,4 +59,15 @@ describe("Create Account", () => {
     await sut.create(dto);
     expect(spy).toHaveBeenCalledWith({ ...dto, password: "any_hash" });
   });
+  test("should throws if create method throws", () => {
+    const { sut, createAccountRepositoryStub } = makeSut();
+    jest
+      .spyOn(createAccountRepositoryStub, "create")
+      .mockImplementationOnce(() => {
+        throw new Error();
+      });
+    const dto = { ...createDTO };
+    const response = sut.create(dto);
+    expect(response).rejects.toThrow(new Error());
+  });
 });
