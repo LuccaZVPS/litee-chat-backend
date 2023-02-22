@@ -9,7 +9,6 @@ import {
 import { FindAccountByEmail } from "../../../src/domain/useCases/account/find-account-by-email";
 import { AccountModel } from "../../../src/domain/models/account";
 import { UnauthorizedError } from "../../../src/presentation/errors/unauthorized-error";
-import { CompareHash } from "../../../src/data/protocols/account/compare-hash";
 import { anyAccount } from "./mocks/fake-account";
 import { Authentication } from "../../../src/domain/useCases/account/authentication";
 describe("Authentication Controller", () => {
