@@ -29,4 +29,14 @@ describe("FindAccountByEmail", () => {
     await sut.findByEmail(emailMock);
     expect(spy).toHaveBeenCalledWith(emailMock);
   });
+  test("should throws if find method throws", async () => {
+    const { sut, findAccountByEmailRepository } = makeSut();
+    jest
+      .spyOn(findAccountByEmailRepository, "find")
+      .mockImplementationOnce(() => {
+        throw new Error();
+      });
+    const response = sut.findByEmail(emailMock);
+    expect(response).rejects.toThrow(new Error());
+  });
 });
