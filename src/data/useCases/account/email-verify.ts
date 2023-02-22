@@ -8,7 +8,10 @@ export class EmailVerify implements EmailVerifyType {
     private readonly emailVerifyRepository: EmailVerifyRepository
   ) {}
   async verify(_id: string, password: string): Promise<boolean> {
-    await this.findSecret.find(_id);
+    const secret = await this.findSecret.find(_id);
+    if (!secret) {
+      return false;
+    }
     return;
   }
 }
