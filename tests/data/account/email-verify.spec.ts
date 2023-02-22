@@ -34,4 +34,14 @@ describe("Email verify", () => {
     await sut.verify("any_id", "any_secret");
     expect(spy).toHaveBeenCalledWith("any_id");
   });
+  test("should throw if find method throws", async () => {
+    const { sut, findSecretSutb } = makeSut();
+    const spy = jest
+      .spyOn(findSecretSutb, "find")
+      .mockImplementationOnce(() => {
+        throw new Error();
+      });
+    const response = sut.verify("any_id", "any_secret");
+    expect(response).rejects.toThrow(new Error());
+  });
 });
