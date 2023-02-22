@@ -6,6 +6,7 @@ import {
 import { InvalidBody } from "../../../src/presentation/errors/invalid-body-error";
 import {
   badRequest,
+  ok,
   serverError,
 } from "../../../src/presentation/helpers/http-helper";
 import { FileType } from "../../../src/presentation/protocols/file-type";
@@ -89,5 +90,13 @@ describe("Update image controller", () => {
       userId: "any_id",
     });
     expect(response).toEqual(serverError());
+  });
+  test("should return ok", async () => {
+    const { sut } = makeSut();
+    const response = await sut.handle({
+      file: { path: "any_file_path" },
+      userId: "any_id",
+    });
+    expect(response).toEqual(ok("image updated"));
   });
 });
