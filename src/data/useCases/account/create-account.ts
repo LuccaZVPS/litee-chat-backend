@@ -19,6 +19,6 @@ export class CreateAccount implements CreateAccountType {
     if (!accountData._id) {
       throw new Error();
     }
-    return;
+    return accountData;
   }
 }
