@@ -79,4 +79,15 @@ describe("Update image controller", () => {
     await sut.handle({ file: { path: "any_file_path" }, userId: "any_id" });
     expect(spy).toBeCalledWith("any_id", "any_file_path");
   });
+  test("should call update method with correct values", async () => {
+    const { sut, updateImageStub } = makeSut();
+    jest.spyOn(updateImageStub, "update").mockImplementationOnce(async () => {
+      throw new Error();
+    });
+    const response = await sut.handle({
+      file: { path: "any_file_path" },
+      userId: "any_id",
+    });
+    expect(response).toEqual(serverError());
+  });
 });
