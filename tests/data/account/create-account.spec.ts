@@ -6,7 +6,7 @@ import { createDTO } from "../../presentation/account/mocks/create-dto";
 describe("Create Account", () => {
   const makeHasherStub = () => {
     class HasherStub implements Hasher {
-      hash(str: string): string {
+      hash(): string {
         return "any_hash";
       }
     }
@@ -51,5 +51,12 @@ describe("Create Account", () => {
     const dto = { ...createDTO };
     const response = sut.create(dto);
     expect(response).rejects.toThrow(new Error());
+  });
+  test("should call create method with correct value", async () => {
+    const { sut, createAccountRepositoryStub } = makeSut();
+    const spy = jest.spyOn(createAccountRepositoryStub, "create");
+    const dto = { ...createDTO };
+    await sut.create(dto);
+    expect(spy).toHaveBeenCalledWith({ ...dto, password: "any_hash" });
   });
 });
