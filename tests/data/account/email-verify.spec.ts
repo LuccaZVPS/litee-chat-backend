@@ -74,7 +74,7 @@ describe("Email verify", () => {
   });
   test("should return true", async () => {
     const { sut } = makeSut();
-    const response = sut.verify("any_id", "any_secret");
+    const response = await sut.verify("any_id", "any_secret");
     expect(response).toBe(true);
   });
 });
