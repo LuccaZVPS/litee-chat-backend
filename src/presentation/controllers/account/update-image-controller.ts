@@ -3,8 +3,12 @@ import { badRequest, serverError } from "../../helpers/http-helper";
 import { Controller, HttpResponse } from "../../protocols/controller";
 import { FileType } from "../../protocols/file-type";
 import { unlinkSync } from "fs";
+import { UpdateImage } from "../../../domain/useCases/account/update-image";
 export class UpdateImageController implements Controller {
-  constructor(private readonly fileType: FileType) {}
+  constructor(
+    private readonly fileType: FileType,
+    private readonly updateImage: UpdateImage
+  ) {}
   async handle(httpRequest: any): Promise<HttpResponse> {
     try {
       const type = await this.fileType.type(httpRequest?.file?.path);

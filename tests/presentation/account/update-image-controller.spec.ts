@@ -1,3 +1,4 @@
+import { UpdateImage } from "../../../src/domain/useCases/account/update-image";
 import {
   unlinkFile,
   UpdateImageController,
@@ -10,6 +11,14 @@ import {
 import { FileType } from "../../../src/presentation/protocols/file-type";
 
 describe("Update image controller", () => {
+  const makeUpdateImageStub = () => {
+    class UpdateImageStub implements UpdateImage {
+      async update(_id: string, path: string): Promise<void> {
+        return;
+      }
+    }
+    return new UpdateImageStub();
+  };
   const makeFileTypeStub = () => {
     class FileTypeStub implements FileType {
       async type(): Promise<string> {
@@ -20,9 +29,11 @@ describe("Update image controller", () => {
   };
   const makeSut = () => {
     const fileTypeStub = makeFileTypeStub();
+    const updateImageStub = makeUpdateImageStub();
     return {
       fileTypeStub,
-      sut: new UpdateImageController(fileTypeStub),
+      updateImageStub,
+      sut: new UpdateImageController(fileTypeStub, updateImageStub),
     };
   };
   test("should call file type method with correct value", async () => {
