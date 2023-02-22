@@ -1,4 +1,3 @@
-import { FindAccountByEmail } from "../../../domain/useCases/account/find-account-by-email";
 import { UnauthorizedError } from "../../errors/unauthorized-error";
 import {
   badRequest,
