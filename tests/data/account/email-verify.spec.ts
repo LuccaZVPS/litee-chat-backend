@@ -5,7 +5,7 @@ import { EmailVerify } from "../../../src/data/useCases/account/email-verify";
 describe("Email verify", () => {
   const makeFindSecretStub = () => {
     class FindSecretStub implements FindSecret {
-      async find(_id: string): Promise<string | void> {
+      async find(): Promise<string | void> {
         return "any_secret";
       }
     }
@@ -13,7 +13,7 @@ describe("Email verify", () => {
   };
   const makeEmailVerifyRepositoryStub = () => {
     class EmailVerifyRepositoryStub implements EmailVerifyRepository {
-      async verify(_id: string): Promise<void> {
+      async verify(): Promise<void> {
         return;
       }
     }
@@ -36,11 +36,9 @@ describe("Email verify", () => {
   });
   test("should throw if find method throws", async () => {
     const { sut, findSecretSutb } = makeSut();
-    const spy = jest
-      .spyOn(findSecretSutb, "find")
-      .mockImplementationOnce(() => {
-        throw new Error();
-      });
+    jest.spyOn(findSecretSutb, "find").mockImplementationOnce(() => {
+      throw new Error();
+    });
     const response = sut.verify("any_id", "any_secret");
     expect(response).rejects.toThrow(new Error());
   });
@@ -48,6 +46,14 @@ describe("Email verify", () => {
     const { sut, findSecretSutb } = makeSut();
     jest.spyOn(findSecretSutb, "find").mockImplementationOnce(async () => {
       return "";
+    });
+    const response = await sut.verify("any_id", "any_secret");
+    expect(response).toBe(false);
+  });
+  test("should return false if wrong secret is provided", async () => {
+    const { sut, findSecretSutb } = makeSut();
+    jest.spyOn(findSecretSutb, "find").mockImplementationOnce(async () => {
+      return "wrong_secret";
     });
     const response = await sut.verify("any_id", "any_secret");
     expect(response).toBe(false);
