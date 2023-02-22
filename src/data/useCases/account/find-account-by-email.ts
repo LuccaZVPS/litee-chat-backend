@@ -7,7 +7,10 @@ export class FindAccountByEmail implements FindAccountByEmailType {
     private readonly findAccountByEmailRepository: FindAccountByEmailRepository
   ) {}
   async findByEmail(email: string): Promise<void | AccountModel> {
-    await this.findAccountByEmailRepository.find(email);
+    const accountFound = await this.findAccountByEmailRepository.find(email);
+    if (!accountFound || !accountFound._id) {
+      return;
+    }
     return;
   }
 }
