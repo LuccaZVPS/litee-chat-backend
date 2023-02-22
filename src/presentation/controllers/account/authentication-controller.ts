@@ -31,10 +31,13 @@ export class AuthenticationController implements Controller {
       if (!accountFound) {
         return unauthorized(new UnauthorizedError());
       }
-      await this.authentication.auth(
+      const isCorrect = await this.authentication.auth(
         authenticationDTO.email,
         authenticationDTO.password
       );
+      if (!isCorrect) {
+        return unauthorized(new UnauthorizedError());
+      }
       return ok("logged in");
     } catch {
       return serverError();
