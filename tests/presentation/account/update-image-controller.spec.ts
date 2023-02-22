@@ -13,7 +13,7 @@ import { FileType } from "../../../src/presentation/protocols/file-type";
 describe("Update image controller", () => {
   const makeUpdateImageStub = () => {
     class UpdateImageStub implements UpdateImage {
-      async update(_id: string, path: string): Promise<void> {
+      async update(): Promise<void> {
         return;
       }
     }
@@ -72,5 +72,11 @@ describe("Update image controller", () => {
     const spy = jest.spyOn(unlinkFile, "unlink");
     await sut.handle({ file: { path: "./any_file_path" } });
     expect(spy).toBeCalledWith("./any_file_path");
+  });
+  test("should call update method with correct values", async () => {
+    const { sut, updateImageStub } = makeSut();
+    const spy = jest.spyOn(updateImageStub, "update");
+    await sut.handle({ file: { path: "any_file_path" }, userId: "any_id" });
+    expect(spy).toBeCalledWith("any_id", "any_file_path");
   });
 });
