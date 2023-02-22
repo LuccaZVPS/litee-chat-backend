@@ -17,6 +17,7 @@ export class UpdateImageController implements Controller {
         unlinkFile.unlink(httpRequest.file.path);
         return badRequest(new InvalidBody("file extension not allowed"));
       }
+      await this.updateImage.update(httpRequest.userId, httpRequest.file.path);
       return;
     } catch {
       return serverError();
