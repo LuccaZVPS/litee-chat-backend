@@ -40,7 +40,7 @@ export class AuthenticationController implements Controller {
       if (!isCorrect) {
         return unauthorized(new UnauthorizedError());
       }
-      return ok("logged in");
+      return ok(isCorrect);
     } catch {
       return serverError();
     }
