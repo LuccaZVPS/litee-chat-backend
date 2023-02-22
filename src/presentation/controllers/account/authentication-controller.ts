@@ -1,7 +1,7 @@
 import { FindAccountByEmail } from "../../../domain/useCases/account/find-account-by-email";
 import { UnauthorizedError } from "../../errors/unauthorized-error";
 import { ok, serverError, unauthorized } from "../../helpers/http-helper";
-import { CompareHash } from "../../protocols/compare-hash";
+import { CompareHash } from "../../../data/protocols/account/compare-hash";
 import {
   Controller,
   HttpRequest,
