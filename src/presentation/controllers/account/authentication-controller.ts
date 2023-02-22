@@ -1,7 +1,6 @@
 import { FindAccountByEmail } from "../../../domain/useCases/account/find-account-by-email";
 import { UnauthorizedError } from "../../errors/unauthorized-error";
 import { ok, serverError, unauthorized } from "../../helpers/http-helper";
-import { CompareHash } from "../../../data/protocols/account/compare-hash";
 import {
   Controller,
   HttpRequest,
@@ -9,12 +8,13 @@ import {
 } from "../../protocols/controller";
 import { Validator } from "../../protocols/validator";
 import { AuthenticationDTO } from "./DTOs/authentication-dto";
+import { Authentication } from "../../../domain/useCases/account/authentication";
 
 export class AuthenticationController implements Controller {
   constructor(
     private readonly validator: Validator,
     private readonly findAccountByEmail: FindAccountByEmail,
-    private readonly compareHash: CompareHash
+    private readonly authentication: Authentication
   ) {}
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
@@ -31,13 +31,10 @@ export class AuthenticationController implements Controller {
       if (!accountFound) {
         return unauthorized(new UnauthorizedError());
       }
-      const isValid = this.compareHash.compare(
-        authenticationDTO.password,
-        accountFound.password
+      await this.authentication.auth(
+        authenticationDTO.email,
+        authenticationDTO.password
       );
-      if (!isValid) {
-        return unauthorized(new UnauthorizedError());
-      }
       return ok("logged in");
     } catch {
       return serverError();
