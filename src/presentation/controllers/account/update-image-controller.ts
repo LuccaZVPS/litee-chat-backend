@@ -1,5 +1,5 @@
 import { InvalidBody } from "../../errors/invalid-body-error";
-import { badRequest, serverError } from "../../helpers/http-helper";
+import { badRequest, ok, serverError } from "../../helpers/http-helper";
 import { Controller, HttpResponse } from "../../protocols/controller";
 import { FileType } from "../../protocols/file-type";
 import { unlinkSync } from "fs";
@@ -18,7 +18,7 @@ export class UpdateImageController implements Controller {
         return badRequest(new InvalidBody("file extension not allowed"));
       }
       await this.updateImage.update(httpRequest.userId, httpRequest.file.path);
-      return;
+      return ok("image updated");
     } catch {
       return serverError();
     }
