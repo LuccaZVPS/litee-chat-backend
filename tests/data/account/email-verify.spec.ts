@@ -64,4 +64,12 @@ describe("Email verify", () => {
     await sut.verify("any_id", "any_secret");
     expect(spy).toHaveBeenCalledWith("any_id");
   });
+  test("should throw if verify method throws", async () => {
+    const { sut, emailVerifyRepository } = makeSut();
+    jest.spyOn(emailVerifyRepository, "verify").mockImplementationOnce(() => {
+      throw new Error();
+    });
+    const response = sut.verify("any_id", "any_secret");
+    expect(response).rejects.toThrow(new Error());
+  });
 });
