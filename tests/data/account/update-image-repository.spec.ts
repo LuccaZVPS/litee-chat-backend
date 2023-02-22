@@ -23,4 +23,14 @@ describe("UpdateImage", () => {
     await sut.update("any_id", "any_path");
     expect(spy).toHaveBeenCalledWith("any_id", "any_path");
   });
+  test("should throws if update method throws", () => {
+    const { sut, updateImageRepositoryStub } = makeSut();
+    jest
+      .spyOn(updateImageRepositoryStub, "update")
+      .mockImplementationOnce(() => {
+        throw new Error();
+      });
+    const response = sut.update("any_id", "any_path");
+    expect(response).rejects.toThrow(new Error());
+  });
 });
