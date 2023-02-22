@@ -72,4 +72,9 @@ describe("Email verify", () => {
     const response = sut.verify("any_id", "any_secret");
     expect(response).rejects.toThrow(new Error());
   });
+  test("should return true", async () => {
+    const { sut } = makeSut();
+    const response = sut.verify("any_id", "any_secret");
+    expect(response).toBe(true);
+  });
 });
