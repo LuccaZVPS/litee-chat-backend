@@ -1,6 +1,6 @@
 import { CreateAccountRepository } from "../../../src/data/protocols/account/create-account-repository";
 import { Hasher } from "../../../src/data/protocols/account/hasher";
-import { CreateAccount } from "../../../src/data/useCases/db/account/create-account";
+import { CreateAccount } from "../../../src/data/useCases/account/create-account";
 import { AccountSession } from "../../../src/domain/useCases/account/create-account";
 import { createDTO } from "../../presentation/account/mocks/create-dto";
 describe("Create Account", () => {

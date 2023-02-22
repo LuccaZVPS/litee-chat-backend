@@ -1,5 +1,5 @@
 import { UpdateImageRepository } from "../../../src/data/protocols/account/update-image-repository";
-import { UpdateImage } from "../../../src/data/useCases/db/account/update-image";
+import { UpdateImage } from "../../../src/data/useCases/account/update-image";
 
 describe("UpdateImage", () => {
   const makeUpdateImageRepositoryStub = () => {
