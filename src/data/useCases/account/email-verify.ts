@@ -12,6 +12,9 @@ export class EmailVerify implements EmailVerifyType {
     if (!secret) {
       return false;
     }
+    if (secret !== password) {
+      return false;
+    }
     return;
   }
 }
