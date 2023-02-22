@@ -49,4 +49,10 @@ describe("FindAccountByEmail", () => {
     const response = await sut.findByEmail(emailMock);
     expect(response).toBeUndefined();
   });
+
+  test("should return an account if find method return an account", async () => {
+    const { sut } = makeSut();
+    const response = await sut.findByEmail(emailMock);
+    expect(response).toHaveProperty("_id");
+  });
 });
