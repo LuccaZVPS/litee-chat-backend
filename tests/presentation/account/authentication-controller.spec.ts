@@ -11,14 +11,15 @@ import { AccountModel } from "../../../src/domain/models/account";
 import { UnauthorizedError } from "../../../src/presentation/errors/unauthorized-error";
 import { CompareHash } from "../../../src/data/protocols/account/compare-hash";
 import { anyAccount } from "./mocks/fake-account";
+import { Authentication } from "../../../src/domain/useCases/account/authentication";
 describe("Authentication Controller", () => {
-  const makeCompareHashStub = () => {
-    class CompareHashStub implements CompareHash {
-      compare(): boolean {
+  const makeAuthenticationStub = () => {
+    class AuthenticationStub implements Authentication {
+      async auth(email: string, password: string): Promise<boolean> {
         return true;
       }
     }
-    return new CompareHashStub();
+    return new AuthenticationStub();
   };
   const makeValidatorStub = () => {
     class ValidatorStub implements Validator {
@@ -39,15 +40,15 @@ describe("Authentication Controller", () => {
   const makeSut = () => {
     const findByEmailStub = makeFinByEmailStub();
     const validatorStub = makeValidatorStub();
-    const compareHashStub = makeCompareHashStub();
+    const AuthenticationStub = makeAuthenticationStub();
     return {
       validatorStub,
       findByEmailStub,
-      compareHashStub,
+      AuthenticationStub,
       sut: new AuthenticationController(
         validatorStub,
         findByEmailStub,
-        compareHashStub
+        AuthenticationStub
       ),
     };
   };
@@ -95,9 +96,9 @@ describe("Authentication Controller", () => {
     expect(response).toEqual(serverError());
   });
   test("should call compare method with correct values", async () => {
-    const { sut, compareHashStub, findByEmailStub } = makeSut();
+    const { sut, AuthenticationStub, findByEmailStub } = makeSut();
 
-    const spy = jest.spyOn(compareHashStub, "compare");
+    const spy = jest.spyOn(AuthenticationStub, "auth");
     const dto = loginDTO;
     const accountFound = anyAccount;
     jest
@@ -106,12 +107,12 @@ describe("Authentication Controller", () => {
         return accountFound;
       });
     await sut.handle({ body: { ...dto } });
-    expect(spy).toBeCalledWith(dto.password, accountFound.password);
+    expect(spy).toBeCalledWith(dto.email, dto.password);
   });
-  test("should return unauthorized if compare method return false", async () => {
-    const { sut, compareHashStub, findByEmailStub } = makeSut();
+  test("should return unauthorized if auth method return false", async () => {
+    const { sut, AuthenticationStub, findByEmailStub } = makeSut();
 
-    jest.spyOn(compareHashStub, "compare").mockImplementationOnce(() => {
+    jest.spyOn(AuthenticationStub, "auth").mockImplementationOnce(async () => {
       return false;
     });
     const dto = loginDTO;
