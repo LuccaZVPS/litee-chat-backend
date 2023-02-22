@@ -1,10 +1,11 @@
+import { CreateAccountDTO } from "../../../../presentation/controllers/account/DTOs/create-account-dto";
 import {
   AccountSession,
   CreateAccount as CreateAccountType,
-} from "../../../domain/useCases/account/create-account";
-import { CreateAccountDTO } from "../../../presentation/controllers/account/DTOs/create-account-dto";
-import { CreateAccountRepository } from "../../protocols/account/create-account-repository";
-import { Hasher } from "../../protocols/account/hasher";
+} from "../../../../domain/useCases/account/create-account";
+import { CreateAccountRepository } from "../../../protocols/account/create-account-repository";
+import { Hasher } from "../../../protocols/account/hasher";
+
 export class CreateAccount implements CreateAccountType {
   constructor(
     private readonly hasher: Hasher,

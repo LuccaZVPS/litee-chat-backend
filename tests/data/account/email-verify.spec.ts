@@ -1,6 +1,6 @@
 import { EmailVerifyRepository } from "../../../src/data/protocols/account/email-verify-repository";
 import { FindSecret } from "../../../src/data/protocols/account/find-secrect";
-import { EmailVerify } from "../../../src/data/useCases/account/email-verify";
+import { EmailVerify } from "../../../src/data/useCases/db/account/email-verify";
 
 describe("Email verify", () => {
   const makeFindSecretStub = () => {

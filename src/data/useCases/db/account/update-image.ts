@@ -1,5 +1,5 @@
-import { UpdateImage as UpdateImageType } from "../../../domain/useCases/account/update-image";
-import { UpdateImageRepository } from "../../protocols/account/update-image-repository";
+import { UpdateImage as UpdateImageType } from "../../../../domain/useCases/account/update-image";
+import { UpdateImageRepository } from "../../../protocols/account/update-image-repository";
 
 export class UpdateImage implements UpdateImageType {
   constructor(private readonly updateImageRepository: UpdateImageRepository) {}

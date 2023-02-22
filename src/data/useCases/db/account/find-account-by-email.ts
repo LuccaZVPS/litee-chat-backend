@@ -1,6 +1,6 @@
-import { AccountModel } from "../../../domain/models/account";
-import { FindAccountByEmail as FindAccountByEmailType } from "../../../domain/useCases/account/find-account-by-email";
-import { FindAccountByEmailRepository } from "../../protocols/account/find-account-by-email-repository";
+import { AccountModel } from "../../../../domain/models/account";
+import { FindAccountByEmail as FindAccountByEmailType } from "../../../../domain/useCases/account/find-account-by-email";
+import { FindAccountByEmailRepository } from "../../../protocols/account/find-account-by-email-repository";
 
 export class FindAccountByEmail implements FindAccountByEmailType {
   constructor(
