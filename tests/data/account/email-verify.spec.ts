@@ -58,4 +58,10 @@ describe("Email verify", () => {
     const response = await sut.verify("any_id", "any_secret");
     expect(response).toBe(false);
   });
+  test("should call verify with correct value", async () => {
+    const { sut, emailVerifyRepository } = makeSut();
+    const spy = jest.spyOn(emailVerifyRepository, "verify");
+    await sut.verify("any_id", "any_secret");
+    expect(spy).toHaveBeenCalledWith("any_id");
+  });
 });
