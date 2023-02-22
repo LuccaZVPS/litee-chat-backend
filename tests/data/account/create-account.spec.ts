@@ -81,4 +81,18 @@ describe("Create Account", () => {
     const response = sut.create(dto);
     expect(response).rejects.toThrow(new Error());
   });
+  test("should return account data", async () => {
+    const { sut } = makeSut();
+    const dto = { ...createDTO };
+
+    const accountData = await sut.create(dto);
+    expect(accountData).toEqual({
+      _id: "any_id",
+      email: "any_email",
+      name: "any_name",
+      friends: [],
+      imageURL: "",
+      requests: [],
+    });
+  });
 });
