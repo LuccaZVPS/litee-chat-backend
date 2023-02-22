@@ -11,6 +11,6 @@ export class FindAccountByEmail implements FindAccountByEmailType {
     if (!accountFound || !accountFound._id) {
       return;
     }
-    return;
+    return accountFound;
   }
 }
