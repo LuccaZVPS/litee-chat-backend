@@ -2,19 +2,18 @@ import { AuthenticationController } from "../../../src/presentation/controllers/
 import { faker } from "@faker-js/faker";
 import { Validator } from "../../../src/presentation/protocols/validator";
 import {
+  badRequest,
   ok,
   serverError,
   unauthorized,
 } from "../../../src/presentation/helpers/http-helper";
-import { FindAccountByEmail } from "../../../src/domain/useCases/account/find-account-by-email";
-import { AccountModel } from "../../../src/domain/models/account";
 import { UnauthorizedError } from "../../../src/presentation/errors/unauthorized-error";
-import { anyAccount } from "./mocks/fake-account";
 import { Authentication } from "../../../src/domain/useCases/account/authentication";
+import { InvalidBody } from "../../../src/presentation/errors/invalid-body-error";
 describe("Authentication Controller", () => {
   const makeAuthenticationStub = () => {
     class AuthenticationStub implements Authentication {
-      async auth(email: string, password: string): Promise<boolean> {
+      async auth(): Promise<boolean> {
         return true;
       }
     }
@@ -28,27 +27,13 @@ describe("Authentication Controller", () => {
     }
     return new ValidatorStub();
   };
-  const makeFinByEmailStub = () => {
-    class FindByEmailStub implements FindAccountByEmail {
-      async findByEmail(): Promise<AccountModel | void> {
-        return;
-      }
-    }
-    return new FindByEmailStub();
-  };
   const makeSut = () => {
-    const findByEmailStub = makeFinByEmailStub();
     const validatorStub = makeValidatorStub();
     const AuthenticationStub = makeAuthenticationStub();
     return {
       validatorStub,
-      findByEmailStub,
       AuthenticationStub,
-      sut: new AuthenticationController(
-        validatorStub,
-        findByEmailStub,
-        AuthenticationStub
-      ),
+      sut: new AuthenticationController(validatorStub, AuthenticationStub),
     };
   };
   const loginDTO = {
@@ -62,6 +47,15 @@ describe("Authentication Controller", () => {
     await sut.handle({ body: { ...dto } });
     expect(spy).toBeCalledWith(dto);
   });
+  test("should return badRequest if validate method return errors", async () => {
+    const { sut, validatorStub } = makeSut();
+    jest.spyOn(validatorStub, "validate").mockImplementationOnce(async () => {
+      return { errors: "any_errors" };
+    });
+    const dto = loginDTO;
+    const response = await sut.handle({ body: { ...dto } });
+    expect(response).toEqual(badRequest(new InvalidBody("any_errors")));
+  });
   test("should return serverError if validate throws", async () => {
     const { sut, validatorStub } = makeSut();
     jest.spyOn(validatorStub, "validate").mockImplementationOnce(async () => {
@@ -71,68 +65,26 @@ describe("Authentication Controller", () => {
     const response = await sut.handle({ body: { ...dto } });
     expect(response).toEqual(serverError());
   });
-  test("should call findByEmail method with correct values", async () => {
-    const { sut, findByEmailStub } = makeSut();
-    const spy = jest.spyOn(findByEmailStub, "findByEmail");
-    const dto = loginDTO;
-    await sut.handle({ body: { ...dto } });
-    expect(spy).toBeCalledWith(dto.email);
-  });
-  test("should return unauthorized if findByEmail return void", async () => {
-    const { sut } = makeSut();
-    const response = await sut.handle({ body: { ...loginDTO } });
-    expect(response).toEqual(unauthorized(new UnauthorizedError()));
-  });
-  test("should return serverError if findByEmail throws", async () => {
-    const { sut, findByEmailStub } = makeSut();
-    jest
-      .spyOn(findByEmailStub, "findByEmail")
-      .mockImplementationOnce(async () => {
-        throw new Error();
-      });
-    const dto = loginDTO;
-    const response = await sut.handle({ body: { ...dto } });
-    expect(response).toEqual(serverError());
-  });
   test("should call compare method with correct values", async () => {
-    const { sut, AuthenticationStub, findByEmailStub } = makeSut();
+    const { sut, AuthenticationStub } = makeSut();
 
     const spy = jest.spyOn(AuthenticationStub, "auth");
     const dto = loginDTO;
-    const accountFound = anyAccount;
-    jest
-      .spyOn(findByEmailStub, "findByEmail")
-      .mockImplementationOnce(async () => {
-        return accountFound;
-      });
     await sut.handle({ body: { ...dto } });
     expect(spy).toBeCalledWith(dto.email, dto.password);
   });
   test("should return unauthorized if auth method return false", async () => {
-    const { sut, AuthenticationStub, findByEmailStub } = makeSut();
-
+    const { sut, AuthenticationStub } = makeSut();
     jest.spyOn(AuthenticationStub, "auth").mockImplementationOnce(async () => {
       return false;
     });
     const dto = loginDTO;
-    const accountFound = anyAccount;
-    jest
-      .spyOn(findByEmailStub, "findByEmail")
-      .mockImplementationOnce(async () => {
-        return accountFound;
-      });
     const respnse = await sut.handle({ body: { ...dto } });
     expect(respnse).toEqual(unauthorized(new UnauthorizedError()));
   });
   test("should return ok if compare method return true", async () => {
-    const { sut, findByEmailStub } = makeSut();
+    const { sut } = makeSut();
     const dto = loginDTO;
-    const accountFound = anyAccount;
-    jest
-      .spyOn(findByEmailStub, "findByEmail")
-      .mockImplementationOnce(async () => {
-        return accountFound;
-      });
     const respnse = await sut.handle({ body: { ...dto } });
     expect(respnse).toEqual(ok("logged in"));
   });
