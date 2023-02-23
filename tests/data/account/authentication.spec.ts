@@ -44,10 +44,20 @@ describe("Authentication", () => {
     email: faker.internet.email(),
     password: faker.internet.password(),
   };
-  test("should call compare find method with correct value", async () => {
+  test("should call find method with correct value", async () => {
     const { sut, findAccountByEmailRepositoryStub } = makeSut();
     const spy = jest.spyOn(findAccountByEmailRepositoryStub, "find");
     await sut.auth(dto.email, dto.password);
     expect(spy).toHaveBeenCalledWith(dto.email);
+  });
+  test("should throws if find method throws", async () => {
+    const { sut, findAccountByEmailRepositoryStub } = makeSut();
+    jest
+      .spyOn(findAccountByEmailRepositoryStub, "find")
+      .mockImplementationOnce(async () => {
+        throw new Error();
+      });
+    const response = sut.auth(dto.email, dto.password);
+    expect(response).rejects.toThrow(new Error());
   });
 });
