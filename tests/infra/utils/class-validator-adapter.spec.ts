@@ -16,4 +16,13 @@ describe("ClassValidatorAdapter", () => {
     await sut.validate(dto);
     expect(spy).toHaveBeenCalledWith(dto);
   });
+  test("should throws if validate method throws", async () => {
+    const { sut } = makeSut();
+    jest.spyOn(method, "validate").mockImplementationOnce(() => {
+      throw new Error();
+    });
+    const dto = new CreateAccountDTO();
+    const response = sut.validate(dto);
+    expect(response).rejects.toThrow(new Error());
+  });
 });
