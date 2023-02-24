@@ -54,5 +54,13 @@ describe("EmailVerify Repository", () => {
       await sut.create("any_id", "any_secret");
       expect(spy).toBeCalledWith({ accountId: "any_id", secret: "any_secret" });
     });
+    test("should throws if create method throws", () => {
+      const { sut } = makeSut();
+      jest.spyOn(emailVerifyModel, "create").mockImplementationOnce(() => {
+        throw new Error();
+      });
+      const response = sut.create("any_id", "any_secret");
+      expect(response).rejects.toThrow(new Error());
+    });
   });
 });
