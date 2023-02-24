@@ -9,6 +9,6 @@ export class EmailVerifyRepository implements FindVerificationRepository {
     if (!verificationFound?._id) {
       return;
     }
-    return;
+    return verificationFound.secret;
   }
 }
