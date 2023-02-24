@@ -27,6 +27,10 @@ export class CreateAccount implements CreateAccountType {
       throw new Error();
     }
     const generatedPassword = this.generatePassword.generate();
+    await this.createVerificationRepository.create(
+      accountData._id,
+      generatedPassword
+    );
     return accountData;
   }
 }
