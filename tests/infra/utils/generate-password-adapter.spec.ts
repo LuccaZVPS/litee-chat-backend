@@ -21,4 +21,13 @@ describe("GeneratePasswordAdapter", () => {
       excludeSimilarCharacters: false,
     });
   });
+  test("should throws if generate throws", () => {
+    const { sut } = makeSut();
+    jest.spyOn(generator, "generate").mockImplementationOnce(() => {
+      throw new Error();
+    });
+    expect(() => {
+      sut.generate();
+    }).toThrow(new Error());
+  });
 });
