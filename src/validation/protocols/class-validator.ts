@@ -3,5 +3,5 @@ export interface ClassValidator {
 }
 export interface ValidationError {
   property: string;
-  constraints: string;
+  constraints: any;
 }
