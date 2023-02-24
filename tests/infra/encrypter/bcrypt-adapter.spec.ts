@@ -31,4 +31,12 @@ describe("BcryptAdapter", () => {
       expect(response).toBe("any_hash");
     });
   });
+  describe("CompareHash", () => {
+    test("should call hash method with correct values", () => {
+      const { sut } = makeSut();
+      const spy = jest.spyOn(bcryptjs, "compareSync");
+      sut.compare("any_str", "any_hash");
+      expect(spy).toHaveBeenCalledWith("any_str", "any_hash");
+    });
+  });
 });
