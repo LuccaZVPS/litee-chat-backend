@@ -4,7 +4,14 @@ import { CreateAccountDTO } from "../../../presentation/controllers/account/DTOs
 import { accountModel } from "../models/account-model-db";
 export class AccountRepository implements CreateAccountRepository {
   async create(createAccountDTO: CreateAccountDTO): Promise<AccountSession> {
-    await accountModel.create({ ...createAccountDTO });
-    return;
+    const account = await accountModel.create({ ...createAccountDTO });
+    return {
+      _id: account.id,
+      email: account.email,
+      friends: [],
+      imageURL: account.imageURL,
+      name: account.name,
+      requests: [],
+    };
   }
 }
