@@ -1,9 +1,38 @@
 import { CreateAccountRepository } from "../../../src/data/protocols/account/create-account-repository";
+import { CreateVerificationRepository } from "../../../src/data/protocols/account/create-verification-repository";
+import { GeneratePassword } from "../../../src/data/protocols/account/generate-password";
 import { Hasher } from "../../../src/data/protocols/account/hasher";
+import { SendVerificationEmail } from "../../../src/data/protocols/account/send-verification-emai";
 import { CreateAccount } from "../../../src/data/useCases/account/create-account";
 import { AccountSession } from "../../../src/domain/useCases/account/create-account";
 import { createDTO } from "../../presentation/account/mocks/create-dto";
 describe("Create Account", () => {
+  const makeGeneratePassword = () => {
+    class GeneratePasswordStub implements GeneratePassword {
+      generate(): string {
+        return "any_password";
+      }
+    }
+    return new GeneratePasswordStub();
+  };
+  const makeCreateVerification = () => {
+    class CreateVerificationRepositoryStub
+      implements CreateVerificationRepository
+    {
+      async create(): Promise<void> {
+        return;
+      }
+    }
+    return new CreateVerificationRepositoryStub();
+  };
+  const makeSendVerificationEmail = () => {
+    class SendVerificationEmailStub implements SendVerificationEmail {
+      async send(): Promise<void> {
+        return;
+      }
+    }
+    return new SendVerificationEmailStub();
+  };
   const makeHasherStub = () => {
     class HasherStub implements Hasher {
       hash(): string {
@@ -30,10 +59,22 @@ describe("Create Account", () => {
   const makeSut = () => {
     const createAccountRepositoryStub = makeCreateAccountRepositoryStub();
     const hashStub = makeHasherStub();
+    const generatePasswordStub = makeGeneratePassword();
+    const makeCreateVerificationStub = makeCreateVerification();
+    const sendVerificationEmailStub = makeSendVerificationEmail();
     return {
       createAccountRepositoryStub,
       hashStub,
-      sut: new CreateAccount(hashStub, createAccountRepositoryStub),
+      generatePasswordStub,
+      makeCreateVerificationStub,
+      sendVerificationEmailStub,
+      sut: new CreateAccount(
+        hashStub,
+        createAccountRepositoryStub,
+        generatePasswordStub,
+        makeCreateVerificationStub,
+        sendVerificationEmailStub
+      ),
     };
   };
   test("should call hash method with correct value", async () => {
@@ -94,5 +135,12 @@ describe("Create Account", () => {
       imageURL: "",
       requests: [],
     });
+  });
+  test("should call generate password method", async () => {
+    const { sut, generatePasswordStub } = makeSut();
+    const spy = jest.spyOn(generatePasswordStub, "generate");
+    const dto = { ...createDTO };
+    await sut.create(dto);
+    expect(spy).toHaveBeenCalled();
   });
 });
