@@ -9,6 +9,9 @@ describe("EmailVerify Repository", () => {
   afterAll(async () => {
     await mongoHelper.close();
   });
+  beforeEach(async () => {
+    await emailVerifyModel.deleteMany();
+  });
   const makeSut = () => {
     return {
       sut: new EmailVerifyRepository(),
@@ -42,6 +45,14 @@ describe("EmailVerify Repository", () => {
       });
       const response = await sut.find(verificationToFind.accountId);
       expect(response).toBe("any_secret");
+    });
+  });
+  describe("CreateVerificationRepository", () => {
+    test("should call create method with correct value", async () => {
+      const { sut } = makeSut();
+      const spy = jest.spyOn(emailVerifyModel, "create");
+      await sut.create("any_id", "any_secret");
+      expect(spy).toBeCalledWith({ accountId: "any_id", secret: "any_secret" });
     });
   });
 });
