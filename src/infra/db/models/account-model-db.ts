@@ -2,7 +2,7 @@ import { randomUUID } from "crypto";
 import Mongoose from "mongoose";
 
 export const accountSchema = new Mongoose.Schema({
-  _id: { type: String, unique: true, default: randomUUID },
+  _id: { type: String, default: randomUUID },
   name: { type: String, required: true },
   email: { type: String, unique: true, required: true },
   password: { type: String, required: true },
