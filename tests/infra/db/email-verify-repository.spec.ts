@@ -21,5 +21,13 @@ describe("EmailVerify Repository", () => {
       await sut.find("any_id");
       expect(spy).toBeCalledWith({ accountId: "any_id" });
     });
+    test("should throws if findOne throws", async () => {
+      const { sut } = makeSut();
+      jest.spyOn(emailVerifyModel, "findOne").mockImplementationOnce(() => {
+        throw new Error();
+      });
+      const response = sut.find("any_id");
+      expect(response).rejects.toThrow(new Error());
+    });
   });
 });
