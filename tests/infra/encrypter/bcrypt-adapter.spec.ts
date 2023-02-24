@@ -38,5 +38,14 @@ describe("BcryptAdapter", () => {
       sut.compare("any_str", "any_hash");
       expect(spy).toHaveBeenCalledWith("any_str", "any_hash");
     });
+    test("should throws if compareSync method throws", () => {
+      const { sut } = makeSut();
+      jest.spyOn(bcryptjs, "compareSync").mockImplementationOnce(() => {
+        throw new Error();
+      });
+      expect(() => {
+        sut.compare("any_str", "any_hash");
+      }).toThrow(new Error());
+    });
   });
 });
