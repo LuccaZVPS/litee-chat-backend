@@ -8,7 +8,16 @@ export class Validator implements ValidatorType {
     if (!validationErrors || validationErrors.length < 1) {
       return { errors: "" };
     }
-
-    return;
+    const errors = validationErrors.map((i) => {
+      const messages = [];
+      for (const prop in i.constraints) {
+        messages.push(i.constraints[prop]);
+      }
+      return {
+        field: i.property,
+        errors: messages,
+      };
+    });
+    return { errors: errors.toString() };
   }
 }
