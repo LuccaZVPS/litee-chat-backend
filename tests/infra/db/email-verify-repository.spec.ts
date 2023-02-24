@@ -34,5 +34,14 @@ describe("EmailVerify Repository", () => {
       const response = await sut.find("any_id");
       expect(response).toBeFalsy();
     });
+    test("should return the correct value", async () => {
+      const { sut } = makeSut();
+      const verificationToFind = await emailVerifyModel.create({
+        accountId: "any_id",
+        secret: "any_secret",
+      });
+      const response = await sut.find(verificationToFind.accountId);
+      expect(response).toBe("any_secret");
+    });
   });
 });
