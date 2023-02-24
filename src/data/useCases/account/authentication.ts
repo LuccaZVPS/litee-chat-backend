@@ -13,7 +13,10 @@ export class Authentication implements AuthenticationType {
     if (!accountFound) {
       return false;
     }
-    this.compareHash.compare(password, accountFound.password);
+    const isEqual = this.compareHash.compare(password, accountFound.password);
+    if (!isEqual) {
+      return false;
+    }
     return;
   }
 }
