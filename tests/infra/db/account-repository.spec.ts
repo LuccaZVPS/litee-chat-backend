@@ -1,3 +1,4 @@
+import { AccountModel } from "../../../src/domain/models/account";
 import { mongoHelper } from "../../../src/infra/db/connection";
 import { accountModel } from "../../../src/infra/db/models/account-model-db";
 import { AccountRepository } from "../../../src/infra/db/repositories/account-repository";
@@ -51,6 +52,13 @@ describe("Account Repository", () => {
       const dto = createDTO.email;
       const response = await sut.find(dto);
       expect(response).toBeFalsy();
+    });
+    test("should return an account if findOne returns an account", async () => {
+      const { sut } = makeSut();
+      const accountToFind = await accountModel.create({ ...createDTO });
+      const dto = createDTO.email;
+      const response = (await sut.find(dto)) as unknown as AccountModel;
+      expect(response.email).toBe(accountToFind.email);
     });
   });
 });
