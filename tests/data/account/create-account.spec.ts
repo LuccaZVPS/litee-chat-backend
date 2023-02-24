@@ -60,19 +60,19 @@ describe("Create Account", () => {
     const createAccountRepositoryStub = makeCreateAccountRepositoryStub();
     const hashStub = makeHasherStub();
     const generatePasswordStub = makeGeneratePassword();
-    const makeCreateVerificationStub = makeCreateVerification();
+    const createVerificationStub = makeCreateVerification();
     const sendVerificationEmailStub = makeSendVerificationEmail();
     return {
       createAccountRepositoryStub,
       hashStub,
       generatePasswordStub,
-      makeCreateVerificationStub,
+      createVerificationStub,
       sendVerificationEmailStub,
       sut: new CreateAccount(
         hashStub,
         createAccountRepositoryStub,
         generatePasswordStub,
-        makeCreateVerificationStub,
+        createVerificationStub,
         sendVerificationEmailStub
       ),
     };
@@ -153,10 +153,19 @@ describe("Create Account", () => {
     expect(response).rejects.toThrow(new Error());
   });
   test("should call createVerication with correct values", async () => {
-    const { sut, makeCreateVerificationStub } = makeSut();
-    const spy = jest.spyOn(makeCreateVerificationStub, "create");
+    const { sut, createVerificationStub } = makeSut();
+    const spy = jest.spyOn(createVerificationStub, "create");
     const dto = { ...createDTO };
     await sut.create(dto);
     expect(spy).toHaveBeenCalledWith("any_id", "any_password");
+  });
+  test("should throws if createVerification throws", () => {
+    const { sut, createVerificationStub } = makeSut();
+    jest.spyOn(createVerificationStub, "create").mockImplementationOnce(() => {
+      throw new Error();
+    });
+    const dto = { ...createDTO };
+    const response = sut.create(dto);
+    expect(response).rejects.toThrow(new Error());
   });
 });
