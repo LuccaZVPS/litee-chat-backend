@@ -180,4 +180,13 @@ describe("Create Account", () => {
       "any_password"
     );
   });
+  test("should throws if sendVerificationEmail throws", () => {
+    const { sut, sendVerificationEmailStub } = makeSut();
+    jest.spyOn(sendVerificationEmailStub, "send").mockImplementationOnce(() => {
+      throw new Error();
+    });
+    const dto = { ...createDTO };
+    const response = sut.create(dto);
+    expect(response).rejects.toThrow(new Error());
+  });
 });
