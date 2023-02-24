@@ -48,4 +48,26 @@ describe("Validator", () => {
     const response = await sut.validate(dtoExample);
     expect(response).toEqual({ errors: "" });
   });
+  test("should return errors in the correct format", async () => {
+    const { sut, classValidatorAdapterStub } = makeSut();
+    const value = [
+      { property: "any_field", constraints: { any_error: "any_message" } },
+    ];
+    jest
+      .spyOn(classValidatorAdapterStub, "validate")
+      .mockImplementationOnce(async () => value);
+    const returnValue = value.map((i) => {
+      const messages = [];
+      for (const prop in i.constraints) {
+        messages.push(i.constraints[prop]);
+      }
+      return {
+        field: i.property,
+        errors: messages,
+      };
+    });
+    const dtoExample = new CreateAccountDTO();
+    const response = await sut.validate(dtoExample);
+    expect(response).toEqual({ errors: returnValue.toString() });
+  });
 });
