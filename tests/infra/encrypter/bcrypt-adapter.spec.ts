@@ -15,14 +15,20 @@ describe("BcryptAdapter", () => {
     });
     test("should throws if hash method throws", () => {
       const { sut } = makeSut();
-      const spy = jest
-        .spyOn(bcryptjs, "hashSync")
-        .mockImplementationOnce(() => {
-          throw new Error();
-        });
+      jest.spyOn(bcryptjs, "hashSync").mockImplementationOnce(() => {
+        throw new Error();
+      });
       expect(() => {
         sut.hash("any_hash");
       }).toThrow(new Error());
+    });
+    test("should return the same value as hashSync", () => {
+      const { sut } = makeSut();
+      jest.spyOn(bcryptjs, "hashSync").mockImplementationOnce(() => {
+        return "any_hash";
+      });
+      const response = sut.hash("any_string");
+      expect(response).toBe("any_hash");
     });
   });
 });
