@@ -29,5 +29,10 @@ describe("EmailVerify Repository", () => {
       const response = sut.find("any_id");
       expect(response).rejects.toThrow(new Error());
     });
+    test("should return void if findOne fails", async () => {
+      const { sut } = makeSut();
+      const response = await sut.find("any_id");
+      expect(response).toBeFalsy();
+    });
   });
 });
