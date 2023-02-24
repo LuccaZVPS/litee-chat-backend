@@ -19,7 +19,10 @@ export class AccountRepository
     };
   }
   async find(email: string): Promise<void | AccountModel> {
-    await accountModel.findOne({ email });
-    return;
+    const account = await accountModel.findOne({ email });
+    if (!account?._id) {
+      return;
+    }
+    return true as unknown as void;
   }
 }
