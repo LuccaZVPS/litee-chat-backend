@@ -79,4 +79,16 @@ describe("Account Repository", () => {
       expect(accountVerified[0].verified).toBe(true);
     });
   });
+
+  describe("UpdateImageRepository", () => {
+    test("should call findOneAndUpdate with correct values", async () => {
+      const { sut } = makeSut();
+      const spy = jest.spyOn(accountModel, "findOneAndUpdate");
+      await sut.update("any_id", "any_path");
+      expect(spy).toHaveBeenCalledWith(
+        { _id: "any_id" },
+        { $set: { imageURL: "any_path" } }
+      );
+    });
+  });
 });
