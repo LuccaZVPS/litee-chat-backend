@@ -36,4 +36,14 @@ describe("Account Repository", () => {
       expect(response.requests).toBeTruthy();
     });
   });
+
+  describe("FindAccountByEmail", () => {
+    test("should call findOne method with correct value", async () => {
+      const { sut } = makeSut();
+      const spy = jest.spyOn(accountModel, "findOne");
+      const dto = createDTO.email;
+      await sut.find(dto);
+      expect(spy).toHaveBeenCalledWith({ email: dto });
+    });
+  });
 });
