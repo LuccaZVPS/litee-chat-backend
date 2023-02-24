@@ -70,4 +70,10 @@ describe("Authentication", () => {
     const response = await sut.auth(dto.email, dto.password);
     expect(response).toBe(false);
   });
+  test("should call compare method with correct value", async () => {
+    const { sut, compareHashStub } = makeSut();
+    const spy = jest.spyOn(compareHashStub, "compare");
+    await sut.auth(dto.email, dto.password);
+    expect(spy).toHaveBeenCalledWith(dto.password, "any_hash");
+  });
 });
