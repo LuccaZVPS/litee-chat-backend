@@ -5,11 +5,13 @@ import { AccountModel } from "../../../domain/models/account";
 import { AccountSession } from "../../../domain/useCases/account/create-account";
 import { CreateAccountDTO } from "../../../presentation/controllers/account/DTOs/create-account-dto";
 import { accountModel } from "../models/account-model-db";
+import { UpdateImageRepository } from "../../../data/protocols/account/update-image-repository";
 export class AccountRepository
   implements
     CreateAccountRepository,
     FindAccountByEmailRepository,
-    EmailVerifyRepository
+    EmailVerifyRepository,
+    UpdateImageRepository
 {
   async create(createAccountDTO: CreateAccountDTO): Promise<AccountSession> {
     const account = await accountModel.create({ ...createAccountDTO });
@@ -38,6 +40,10 @@ export class AccountRepository
         },
       }
     );
+    return;
+  }
+  async update(_id: string, path: string): Promise<void> {
+    await accountModel.findOneAndUpdate({ _id }, { $set: { imageURL: path } });
     return;
   }
 }
