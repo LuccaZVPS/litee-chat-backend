@@ -9,16 +9,31 @@ describe("Account Repository", () => {
   afterAll(async () => {
     await mongoHelper.close();
   });
+  afterEach(async () => {
+    await accountModel.deleteMany();
+  });
   const makeSut = () => {
     return {
       sut: new AccountRepository(),
     };
   };
-  test("should call create method with correct value", async () => {
-    const { sut } = makeSut();
-    const spy = jest.spyOn(accountModel, "create");
-    const dto = createDTO;
-    await sut.create(dto);
-    expect(spy).toHaveBeenCalledWith({ ...dto });
+  describe("CreateAccountRepository", () => {
+    test("should call create method with correct value", async () => {
+      const { sut } = makeSut();
+      const spy = jest.spyOn(accountModel, "create");
+      const dto = createDTO;
+      await sut.create(dto);
+      expect(spy).toHaveBeenCalledWith({ ...dto });
+    });
+    test("should return correct values", async () => {
+      const { sut } = makeSut();
+      const dto = createDTO;
+      const response = await sut.create(dto);
+      expect(response._id).toBeTruthy();
+      expect(response.email).toBeTruthy();
+      expect(response.friends).toBeTruthy();
+      expect(response.name).toBeTruthy();
+      expect(response.requests).toBeTruthy();
+    });
   });
 });
