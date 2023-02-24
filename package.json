@@ -20,7 +20,8 @@
   "dependencies": {
     "class-validator": "^0.14.0",
     "express": "^4.18.2",
-    "file-type": "^18.2.1"
+    "file-type": "^18.2.1",
+    "mongoose": "^6.10.0"
   },
   "devDependencies": {
     "@faker-js/faker": "^7.6.0",
