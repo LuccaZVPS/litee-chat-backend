@@ -17,6 +17,6 @@ export class Authentication implements AuthenticationType {
     if (!isEqual) {
       return false;
     }
-    return;
+    return accountFound;
   }
 }
