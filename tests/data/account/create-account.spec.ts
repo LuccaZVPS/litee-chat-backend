@@ -168,4 +168,16 @@ describe("Create Account", () => {
     const response = sut.create(dto);
     expect(response).rejects.toThrow(new Error());
   });
+  test("should call sendVerificationEmail with correct value", async () => {
+    const { sut, sendVerificationEmailStub } = makeSut();
+    const spy = jest.spyOn(sendVerificationEmailStub, "send");
+    const dto = { ...createDTO };
+    await sut.create(dto);
+    expect(spy).toHaveBeenCalledWith(
+      "any_name",
+      "any_email",
+      "any_id",
+      "any_password"
+    );
+  });
 });
