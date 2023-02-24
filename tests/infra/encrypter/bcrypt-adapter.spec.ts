@@ -13,5 +13,16 @@ describe("BcryptAdapter", () => {
       sut.hash("any_str");
       expect(spy).toHaveBeenCalledWith("any_str");
     });
+    test("should throws if hash method throws", () => {
+      const { sut } = makeSut();
+      const spy = jest
+        .spyOn(bcryptjs, "hashSync")
+        .mockImplementationOnce(() => {
+          throw new Error();
+        });
+      expect(() => {
+        sut.hash("any_hash");
+      }).toThrow(new Error());
+    });
   });
 });
