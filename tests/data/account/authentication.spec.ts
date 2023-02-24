@@ -60,4 +60,14 @@ describe("Authentication", () => {
     const response = sut.auth(dto.email, dto.password);
     expect(response).rejects.toThrow(new Error());
   });
+  test("should return false if find method return void", async () => {
+    const { sut, findAccountByEmailRepositoryStub } = makeSut();
+    jest
+      .spyOn(findAccountByEmailRepositoryStub, "find")
+      .mockImplementationOnce(async () => {
+        return;
+      });
+    const response = await sut.auth(dto.email, dto.password);
+    expect(response).toBe(false);
+  });
 });
