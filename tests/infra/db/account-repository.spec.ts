@@ -45,5 +45,12 @@ describe("Account Repository", () => {
       await sut.find(dto);
       expect(spy).toHaveBeenCalledWith({ email: dto });
     });
+    test("should return void if findOne returns null", async () => {
+      const { sut } = makeSut();
+      jest.spyOn(accountModel, "findOne");
+      const dto = createDTO.email;
+      const response = await sut.find(dto);
+      expect(response).toBeFalsy();
+    });
   });
 });
