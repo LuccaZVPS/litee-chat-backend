@@ -1,8 +1,12 @@
 import { CreateAccountRepository } from "../../../data/protocols/account/create-account-repository";
+import { FindAccountByEmailRepository } from "../../../data/protocols/account/find-account-by-email-repository";
+import { AccountModel } from "../../../domain/models/account";
 import { AccountSession } from "../../../domain/useCases/account/create-account";
 import { CreateAccountDTO } from "../../../presentation/controllers/account/DTOs/create-account-dto";
 import { accountModel } from "../models/account-model-db";
-export class AccountRepository implements CreateAccountRepository {
+export class AccountRepository
+  implements CreateAccountRepository, FindAccountByEmailRepository
+{
   async create(createAccountDTO: CreateAccountDTO): Promise<AccountSession> {
     const account = await accountModel.create({ ...createAccountDTO });
     return {
@@ -13,5 +17,9 @@ export class AccountRepository implements CreateAccountRepository {
       name: account.name,
       requests: [],
     };
+  }
+  async find(email: string): Promise<void | AccountModel> {
+    await accountModel.findOne({ email });
+    return;
   }
 }
