@@ -1,12 +1,14 @@
-import { ValidationError } from "class-validator";
 import { CreateAccountDTO } from "../../src/presentation/controllers/account/DTOs/create-account-dto";
-import { ClassValidator } from "../../src/validation/protocols/class-validator";
+import {
+  ClassValidator,
+  ValidationError,
+} from "../../src/validation/protocols/class-validator";
 import { Validator } from "../../src/validation/validator";
 
 describe("Validator", () => {
   const makeClassValidatorAdapterStub = () => {
     class ClassValidatorAdapterStub implements ClassValidator {
-      async validate(dto: any): Promise<ValidationError[]> {
+      async validate(): Promise<ValidationError[]> {
         return;
       }
     }
@@ -36,5 +38,14 @@ describe("Validator", () => {
     const dtoExample = new CreateAccountDTO();
     const response = sut.validate(dtoExample);
     expect(response).rejects.toThrow(new Error());
+  });
+  test("should return empty error if validate return empty array", async () => {
+    const { sut, classValidatorAdapterStub } = makeSut();
+    jest
+      .spyOn(classValidatorAdapterStub, "validate")
+      .mockImplementationOnce(async () => []);
+    const dtoExample = new CreateAccountDTO();
+    const response = await sut.validate(dtoExample);
+    expect(response).toEqual({ errors: "" });
   });
 });
