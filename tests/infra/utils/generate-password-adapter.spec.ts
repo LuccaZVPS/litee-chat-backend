@@ -30,4 +30,12 @@ describe("GeneratePasswordAdapter", () => {
       sut.generate();
     }).toThrow(new Error());
   });
+  test("should return the same values as generate method", () => {
+    const { sut } = makeSut();
+    jest.spyOn(generator, "generate").mockImplementationOnce(() => {
+      return "any_password";
+    });
+    const response = sut.generate();
+    expect(response).toBe("any_password");
+  });
 });
