@@ -13,7 +13,6 @@ import {
   HttpRequest,
   HttpResponse,
 } from "../../protocols/controller";
-import { SendEmail } from "../../protocols/send-email";
 import { Validator } from "../../protocols/validator";
 import { CreateAccountDTO } from "./DTOs/create-account-dto";
 
@@ -21,8 +20,7 @@ export class CreateAccountController implements Controller {
   constructor(
     private readonly validator: Validator,
     private readonly findAccountByEmail: FindAccountByEmail,
-    private readonly createAccout: CreateAccount,
-    private readonly sendEmail: SendEmail
+    private readonly createAccout: CreateAccount
   ) {}
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
@@ -43,8 +41,7 @@ export class CreateAccountController implements Controller {
       if (emailAlreadyTaken) {
         return conflict(new UsedEmailError());
       }
-      const { _id } = await this.createAccout.create(createAccoutDTO);
-      this.sendEmail.send(createAccoutDTO.email, createAccoutDTO.name, _id);
+      await this.createAccout.create(createAccoutDTO);
       return created("");
     } catch {
       return serverError();
