@@ -6,7 +6,6 @@ export class BcryptAdapter implements Hasher, CompareHash {
     return bcryptjs.hashSync(str);
   }
   compare(str: string, hash: string): boolean {
-    bcryptjs.compareSync(str, hash);
-    return;
+    return bcryptjs.compareSync(str, hash);
   }
 }

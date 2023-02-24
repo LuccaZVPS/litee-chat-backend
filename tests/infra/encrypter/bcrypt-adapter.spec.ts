@@ -47,5 +47,13 @@ describe("BcryptAdapter", () => {
         sut.compare("any_str", "any_hash");
       }).toThrow(new Error());
     });
+    test("should return the same value as hashSync", () => {
+      const { sut } = makeSut();
+      jest.spyOn(bcryptjs, "compareSync").mockImplementationOnce(() => {
+        return false;
+      });
+      const response = sut.compare("any_string", "any_hash");
+      expect(response).toBe(false);
+    });
   });
 });
