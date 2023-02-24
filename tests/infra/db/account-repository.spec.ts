@@ -71,5 +71,12 @@ describe("Account Repository", () => {
         { $set: { verified: true } }
       );
     });
+    test("should verify an account", async () => {
+      const { sut } = makeSut();
+      const accountToVerify = await accountModel.create({ ...createDTO });
+      await sut.verify(accountToVerify._id);
+      const accountVerified = await accountModel.find();
+      expect(accountVerified[0].verified).toBe(true);
+    });
   });
 });
