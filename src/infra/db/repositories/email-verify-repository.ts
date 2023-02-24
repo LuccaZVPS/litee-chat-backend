@@ -1,6 +1,6 @@
-import { FindSecretRepository } from "../../../data/protocols/account/find-secrect-repository";
+import { FindVerificationRepository } from "../../../data/protocols/account/find-verification-repository";
 
-export class EmailVerifyRepository implements FindSecretRepository {
+export class EmailVerifyRepository implements FindVerificationRepository {
   find(_id: string): Promise<string | void> {
     return;
   }

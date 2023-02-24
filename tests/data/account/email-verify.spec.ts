@@ -1,10 +1,10 @@
 import { EmailVerifyRepository } from "../../../src/data/protocols/account/email-verify-repository";
-import { FindSecretRepository } from "../../../src/data/protocols/account/find-secrect-repository";
+import { FindVerificationRepository } from "../../../src/data/protocols/account/find-verification-repository";
 import { EmailVerify } from "../../../src/data/useCases/account/email-verify";
 
 describe("Email verify", () => {
   const makeFindSecretStub = () => {
-    class FindSecretStub implements FindSecretRepository {
+    class FindSecretStub implements FindVerificationRepository {
       async find(): Promise<string | void> {
         return "any_secret";
       }
