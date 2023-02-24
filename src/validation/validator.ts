@@ -4,7 +4,11 @@ import { ClassValidator } from "./protocols/class-validator";
 export class Validator implements ValidatorType {
   constructor(private readonly classValidator: ClassValidator) {}
   async validate(data: any): Promise<{ errors: string }> {
-    await this.classValidator.validate(data);
+    const validationErrors = await this.classValidator.validate(data);
+    if (!validationErrors || validationErrors.length < 1) {
+      return { errors: "" };
+    }
+
     return;
   }
 }
