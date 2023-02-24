@@ -10,11 +10,10 @@ export class Authentication implements AuthenticationType {
   ) {}
   async auth(email: string, password: string): Promise<false | AccountSession> {
     const accountFound = await this.findAccountByEmailRepository.find(email);
-
     if (!accountFound) {
       return false;
     }
-
+    this.compareHash.compare(password, accountFound.password);
     return;
   }
 }
