@@ -9,7 +9,12 @@ export class Authentication implements AuthenticationType {
     private readonly compareHash: CompareHash
   ) {}
   async auth(email: string, password: string): Promise<false | AccountSession> {
-    await this.findAccountByEmailRepository.find(email);
+    const accountFound = await this.findAccountByEmailRepository.find(email);
+
+    if (!accountFound) {
+      return false;
+    }
+
     return;
   }
 }
