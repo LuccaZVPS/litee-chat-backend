@@ -23,6 +23,6 @@ export class AccountRepository
     if (!account?._id) {
       return;
     }
-    return true as unknown as void;
+    return account as unknown as void;
   }
 }
