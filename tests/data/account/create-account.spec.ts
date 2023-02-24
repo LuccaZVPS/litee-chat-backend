@@ -143,4 +143,13 @@ describe("Create Account", () => {
     await sut.create(dto);
     expect(spy).toHaveBeenCalled();
   });
+  test("should throws if generate password throws", () => {
+    const { sut, generatePasswordStub } = makeSut();
+    jest.spyOn(generatePasswordStub, "generate").mockImplementationOnce(() => {
+      throw new Error();
+    });
+    const dto = { ...createDTO };
+    const response = sut.create(dto);
+    expect(response).rejects.toThrow(new Error());
+  });
 });
