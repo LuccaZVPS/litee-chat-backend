@@ -76,4 +76,12 @@ describe("Authentication", () => {
     await sut.auth(dto.email, dto.password);
     expect(spy).toHaveBeenCalledWith(dto.password, "any_hash");
   });
+  test("should throws if compare method throws", () => {
+    const { sut, compareHashStub } = makeSut();
+    jest.spyOn(compareHashStub, "compare").mockImplementationOnce(() => {
+      throw new Error();
+    });
+    const response = sut.auth(dto.email, dto.password);
+    expect(response).rejects.toThrow(new Error());
+  });
 });
