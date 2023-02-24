@@ -92,4 +92,17 @@ describe("Authentication", () => {
     const response = await sut.auth(dto.email, dto.password);
     expect(response).toBe(false);
   });
+  test("should return an account if compare method return true", async () => {
+    const { sut } = makeSut();
+    const response = await sut.auth(dto.email, dto.password);
+    expect(response).toEqual({
+      _id: "any_id",
+      email: "any_email",
+      name: "any_name",
+      friends: [],
+      imageURL: "",
+      requests: [],
+      password: "any_hash",
+    });
+  });
 });
