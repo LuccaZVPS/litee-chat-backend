@@ -152,4 +152,11 @@ describe("Create Account", () => {
     const response = sut.create(dto);
     expect(response).rejects.toThrow(new Error());
   });
+  test("should call createVerication with correct values", async () => {
+    const { sut, makeCreateVerificationStub } = makeSut();
+    const spy = jest.spyOn(makeCreateVerificationStub, "create");
+    const dto = { ...createDTO };
+    await sut.create(dto);
+    expect(spy).toHaveBeenCalledWith("any_id", "any_password");
+  });
 });
