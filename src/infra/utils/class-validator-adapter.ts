@@ -5,8 +5,7 @@ import {
 import { validate } from "class-validator";
 export class ClassValidatorAdapter implements ClassValidator {
   async validate(dto: any): Promise<ValidationError[]> {
-    await method.validate(dto);
-    return;
+    return (await method.validate(dto)) as unknown as ValidationError[];
   }
 }
 export const method = {
