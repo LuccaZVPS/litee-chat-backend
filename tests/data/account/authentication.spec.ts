@@ -84,4 +84,12 @@ describe("Authentication", () => {
     const response = sut.auth(dto.email, dto.password);
     expect(response).rejects.toThrow(new Error());
   });
+  test("should return false if compare method return false", async () => {
+    const { sut, compareHashStub } = makeSut();
+    jest.spyOn(compareHashStub, "compare").mockImplementationOnce(() => {
+      return false;
+    });
+    const response = await sut.auth(dto.email, dto.password);
+    expect(response).toBe(false);
+  });
 });
