@@ -61,4 +61,15 @@ describe("Account Repository", () => {
       expect(response.email).toBe(accountToFind.email);
     });
   });
+  describe("EmailVerifyRepository", () => {
+    test("should call findOneAndUpdate with correct value", async () => {
+      const { sut } = makeSut();
+      const spy = jest.spyOn(accountModel, "findOneAndUpdate");
+      await sut.verify("any_id");
+      expect(spy).toHaveBeenCalledWith(
+        { _id: "any_id" },
+        { $set: { verified: true } }
+      );
+    });
+  });
 });
