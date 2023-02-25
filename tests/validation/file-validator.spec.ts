@@ -23,4 +23,12 @@ describe("FileValidator", () => {
     await sut.type("any_path");
     expect(spy).toHaveBeenCalledWith("any_path");
   });
+  test("should throws if getType method throws", async () => {
+    const { sut, fileTypeAdapterStub } = makeSut();
+    jest.spyOn(fileTypeAdapterStub, "getType").mockImplementationOnce(() => {
+      throw new Error();
+    });
+    const response = sut.type("any_path");
+    expect(response).rejects.toThrow(new Error());
+  });
 });
