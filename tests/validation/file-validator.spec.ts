@@ -41,4 +41,21 @@ describe("FileValidator", () => {
     const response = await sut.checkFile("any_path");
     expect(response).toBe(false);
   });
+  test("should return true if getType return valid extension", async () => {
+    const { sut, fileTypeAdapterStub } = makeSut();
+    jest
+      .spyOn(fileTypeAdapterStub, "getType")
+      .mockImplementationOnce(async () => {
+        return "jpg";
+      });
+    let response = await sut.checkFile("any_path");
+    expect(response).toBe(true);
+    jest
+      .spyOn(fileTypeAdapterStub, "getType")
+      .mockImplementationOnce(async () => {
+        return "jpeg";
+      });
+    response = await sut.checkFile("any_path");
+    expect(response).toBe(true);
+  });
 });
