@@ -1,3 +1,3 @@
 export interface FileType {
-  type(path: string): Promise<string>;
+  checkFile(path: string): Promise<boolean>;
 }
