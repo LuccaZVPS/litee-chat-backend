@@ -8,7 +8,7 @@ export class FileValidator implements FileType {
     if (!fileWhiteList.includes(fileExtension)) {
       return false;
     }
-    return;
+    return true;
   }
 }
 export const fileWhiteList = ["png", "jpg", "jpeg"];
