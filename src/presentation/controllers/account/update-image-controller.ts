@@ -11,6 +11,11 @@ export class UpdateImageController implements Controller {
   ) {}
   async handle(httpRequest: any): Promise<HttpResponse> {
     try {
+      const isValid = await this.fileType.checkFile(httpRequest.file.path);
+      if (!isValid) {
+        unlinkFile.unlink(httpRequest.file.path);
+        return badRequest(new InvalidBody("file extension not allowed"));
+      }
       await this.updateImage.update(httpRequest.userId, httpRequest.file.path);
       return ok("image updated");
     } catch {

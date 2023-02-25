@@ -22,8 +22,8 @@ describe("Update image controller", () => {
   };
   const makeFileTypeStub = () => {
     class FileTypeStub implements FileType {
-      async type(): Promise<string> {
-        return "img";
+      async checkFile(): Promise<boolean> {
+        return true;
       }
     }
     return new FileTypeStub();
@@ -39,13 +39,13 @@ describe("Update image controller", () => {
   };
   test("should call file type method with correct value", async () => {
     const { sut, fileTypeStub } = makeSut();
-    const spy = jest.spyOn(fileTypeStub, "type");
+    const spy = jest.spyOn(fileTypeStub, "checkFile");
     await sut.handle({ file: { path: "any_file_path" } });
     expect(spy).toBeCalledWith("any_file_path");
   });
   test("should return server error if file type method throws", async () => {
     const { sut, fileTypeStub } = makeSut();
-    jest.spyOn(fileTypeStub, "type").mockImplementationOnce(() => {
+    jest.spyOn(fileTypeStub, "checkFile").mockImplementationOnce(() => {
       throw new Error();
     });
     const response = await sut.handle({ file: { path: "any_file_path" } });
@@ -53,8 +53,8 @@ describe("Update image controller", () => {
   });
   test("should return bad request if file extension is not allowed", async () => {
     const { sut, fileTypeStub } = makeSut();
-    jest.spyOn(fileTypeStub, "type").mockImplementationOnce(async () => {
-      return "pdf";
+    jest.spyOn(fileTypeStub, "checkFile").mockImplementationOnce(async () => {
+      return false;
     });
     jest.spyOn(unlinkFile, "unlink").mockImplementationOnce(() => {
       return;
@@ -67,8 +67,8 @@ describe("Update image controller", () => {
   });
   test("should call unlinkSync with correct path if file extension is not allowed", async () => {
     const { sut, fileTypeStub } = makeSut();
-    jest.spyOn(fileTypeStub, "type").mockImplementationOnce(async () => {
-      return "pdf";
+    jest.spyOn(fileTypeStub, "checkFile").mockImplementationOnce(async () => {
+      return false;
     });
     const spy = jest.spyOn(unlinkFile, "unlink");
     await sut.handle({ file: { path: "./any_file_path" } });
