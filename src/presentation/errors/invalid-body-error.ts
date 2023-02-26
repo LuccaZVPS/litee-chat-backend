@@ -1,6 +1,6 @@
 export class InvalidBody extends Error {
   constructor(error: any) {
-    super(error);
+    super(JSON.stringify(error));
     this.name = "InvalidBody";
   }
 }
