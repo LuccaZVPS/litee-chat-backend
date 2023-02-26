@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node-dev --respawn --ignore-watch node_modules src/index.ts",
+    "dev": "ts-node-dev --respawn --ignore-watch node_modules src/main/index.ts",
     "prepare": "husky install",
     "test": "jest --passWithNoTests --runInBand",
     "test:verbose": "jest --passWithNoTests --runInBand",
@@ -23,7 +23,7 @@
     "class-validator": "^0.14.0",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "file-type": "^18.2.1",
+    "file-type": "16.5.4",
     "generate-password": "^1.7.0",
     "mongoose": "^6.10.0",
     "nodemailer": "^6.9.1"
