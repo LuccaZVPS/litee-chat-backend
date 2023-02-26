@@ -4,8 +4,7 @@ import { Controller } from "../../presentation/protocols/controller";
 export const adptRoute = (controller: Controller) => {
   return async (req, res: Response) => {
     const request = {
-      ...(req.body || {}),
-      ...(req.params || {}),
+      body: { ...req?.body, ...req?.params },
       account: req.account,
     };
     const response = await controller.handle(request);
