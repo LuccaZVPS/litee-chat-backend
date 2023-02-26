@@ -1,5 +1,8 @@
 import { CreateAccountController } from "../../../src/presentation/controllers/account/create-account-controller";
-import { Validator } from "../../../src/presentation/protocols/validator";
+import {
+  errorType,
+  Validator,
+} from "../../../src/presentation/protocols/validator";
 import { InvalidBody } from "../../../src/presentation/errors/invalid-body-error";
 import { createDTO } from "./mocks/create-dto";
 import {
@@ -42,8 +45,8 @@ describe("Create Account Controller", () => {
   };
   const makeValidatorStub = () => {
     class ValidatorStub implements Validator {
-      async validate(): Promise<{ errors: string }> {
-        return { errors: "" };
+      async validate(): Promise<{ errors: errorType[] }> {
+        return { errors: [] };
       }
     }
     return new ValidatorStub();
@@ -73,11 +76,13 @@ describe("Create Account Controller", () => {
   test("should return badRequest with invalidBody error", async () => {
     const { sut, validatorStub } = makeSut();
     jest.spyOn(validatorStub, "validate").mockImplementationOnce(async () => {
-      return { errors: "any_error" };
+      return { errors: [{ field: "any", errors: ["any"] }] };
     });
     const dto = createDTO;
     const response = await sut.handle({ body: { ...dto } });
-    expect(response).toEqual(badRequest(new InvalidBody("any_error")));
+    expect(response).toEqual(
+      badRequest(new InvalidBody([{ field: "any", errors: ["any"] }]))
+    );
   });
   test("should return serverError if validate throws", async () => {
     const { sut, validatorStub } = makeSut();

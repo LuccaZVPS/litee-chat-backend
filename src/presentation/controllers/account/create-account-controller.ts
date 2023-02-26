@@ -32,7 +32,7 @@ export class CreateAccountController implements Controller {
       }
       const bodyErrors = (await this.validator.validate(createAccoutDTO))
         .errors;
-      if (bodyErrors) {
+      if (bodyErrors.length > 0) {
         return badRequest(new InvalidBody(bodyErrors));
       }
       const emailAlreadyTaken = await this.findAccountByEmail.findByEmail(
