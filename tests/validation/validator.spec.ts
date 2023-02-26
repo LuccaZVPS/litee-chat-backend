@@ -46,7 +46,7 @@ describe("Validator", () => {
       .mockImplementationOnce(async () => []);
     const dtoExample = new CreateAccountDTO();
     const response = await sut.validate(dtoExample);
-    expect(response).toEqual({ errors: "" });
+    expect(response).toEqual({ errors: [] });
   });
   test("should return errors in the correct format", async () => {
     const { sut, classValidatorAdapterStub } = makeSut();
@@ -68,6 +68,6 @@ describe("Validator", () => {
     });
     const dtoExample = new CreateAccountDTO();
     const response = await sut.validate(dtoExample);
-    expect(response).toEqual({ errors: returnValue.toString() });
+    expect(response).toEqual({ errors: returnValue });
   });
 });
