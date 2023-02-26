@@ -27,7 +27,7 @@ export class EmailVerifyController implements Controller {
         }
       }
       const { errors } = await this.validator.validate(verifyEmailDTO);
-      if (errors) {
+      if (errors.length > 0) {
         return badRequest(new InvalidBody(errors));
       }
       const verified = await this.emailVerify.verify(

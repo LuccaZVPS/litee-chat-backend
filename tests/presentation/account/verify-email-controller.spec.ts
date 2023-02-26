@@ -7,7 +7,10 @@ import {
   ok,
   serverError,
 } from "../../../src/presentation/helpers/http-helper";
-import { Validator } from "../../../src/presentation/protocols/validator";
+import {
+  errorType,
+  Validator,
+} from "../../../src/presentation/protocols/validator";
 
 describe("Verify email controller", () => {
   const makeEmailVerifyStub = () => {
@@ -20,8 +23,8 @@ describe("Verify email controller", () => {
   };
   const makeValidatorStub = () => {
     class ValidatorStub implements Validator {
-      async validate(): Promise<{ errors: string }> {
-        return { errors: "" };
+      async validate(): Promise<{ errors: errorType[] }> {
+        return { errors: [] };
       }
     }
     return new ValidatorStub();
@@ -48,10 +51,12 @@ describe("Verify email controller", () => {
   test("should return badRequest with invalidBody error", async () => {
     const { sut, validatorStub } = makeSut();
     jest.spyOn(validatorStub, "validate").mockImplementationOnce(async () => {
-      return { errors: "any_error" };
+      return { errors: [{ field: "any", errors: ["any"] }] };
     });
     const response = await sut.handle({ body: { ...verifyEmailDTO } });
-    expect(response).toEqual(badRequest(new InvalidBody("any_error")));
+    expect(response).toEqual(
+      badRequest(new InvalidBody([{ field: "any", errors: ["any"] }]))
+    );
   });
   test("should return serverError if validate throws", async () => {
     const { sut, validatorStub } = makeSut();
