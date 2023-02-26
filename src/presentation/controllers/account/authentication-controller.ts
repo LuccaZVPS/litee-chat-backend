@@ -29,7 +29,7 @@ export class AuthenticationController implements Controller {
         }
       }
       const { errors } = await this.validator.validate(authenticationDTO);
-      if (errors) {
+      if (errors.length > 0) {
         return badRequest(new InvalidBody(errors));
       }
       const isCorrect = await this.authentication.auth(

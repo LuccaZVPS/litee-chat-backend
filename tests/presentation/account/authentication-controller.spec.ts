@@ -1,6 +1,9 @@
 import { AuthenticationController } from "../../../src/presentation/controllers/account/authentication-controller";
 import { faker } from "@faker-js/faker";
-import { Validator } from "../../../src/presentation/protocols/validator";
+import {
+  errorType,
+  Validator,
+} from "../../../src/presentation/protocols/validator";
 import {
   badRequest,
   serverError,
@@ -28,8 +31,8 @@ describe("Authentication Controller", () => {
   };
   const makeValidatorStub = () => {
     class ValidatorStub implements Validator {
-      async validate(): Promise<{ errors: string }> {
-        return { errors: "" };
+      async validate(): Promise<{ errors: errorType[] }> {
+        return { errors: [] };
       }
     }
     return new ValidatorStub();
@@ -57,11 +60,13 @@ describe("Authentication Controller", () => {
   test("should return badRequest if validate method return errors", async () => {
     const { sut, validatorStub } = makeSut();
     jest.spyOn(validatorStub, "validate").mockImplementationOnce(async () => {
-      return { errors: "any_errors" };
+      return { errors: [{ field: "any", errors: ["any"] }] };
     });
     const dto = loginDTO;
     const response = await sut.handle({ body: { ...dto } });
-    expect(response).toEqual(badRequest(new InvalidBody("any_errors")));
+    expect(response).toEqual(
+      badRequest(new InvalidBody([{ field: "any", errors: ["any"] }]))
+    );
   });
   test("should return serverError if validate throws", async () => {
     const { sut, validatorStub } = makeSut();
