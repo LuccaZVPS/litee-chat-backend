@@ -1,6 +1,6 @@
-import { EmailVerifyRepository } from "../../../../infra/db/repositories/email-verify-repository";
 import { EmailVerify } from "../../../../data/useCases/account/email-verify";
+import { makeAccountRepository } from "../../repositories/account-repository";
+import { makeVerifyRepository } from "../../repositories/verify-repository";
 export const makeEmailVerify = () => {
-  const emailVerifyRepository = new EmailVerifyRepository();
-  return new EmailVerify(emailVerifyRepository, emailVerifyRepository);
+  return new EmailVerify(makeVerifyRepository(), makeAccountRepository());
 };

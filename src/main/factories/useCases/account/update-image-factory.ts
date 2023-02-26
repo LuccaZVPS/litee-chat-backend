@@ -1,7 +1,7 @@
 import { UpdateImage } from "../../../../data/useCases/account/update-image";
-import { AccountRepository } from "../../../../infra/db/repositories/account-repository";
+import { makeAccountRepository } from "../../repositories/account-repository";
 
 export const makeUpdateImageFactory = () => {
-  const accountRepository = new AccountRepository();
+  const accountRepository = makeAccountRepository();
   return new UpdateImage(accountRepository);
 };

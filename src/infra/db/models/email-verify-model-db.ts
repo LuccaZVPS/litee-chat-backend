@@ -6,4 +6,4 @@ export const emailVerifySchema = new Mongoose.Schema({
   accountId: { type: String, unique: true, required: true },
   secret: { type: String, required: true },
 });
-export const emailVerifyModel = Mongoose.model("accounts", emailVerifySchema);
+export const emailVerifyModel = Mongoose.model("verify", emailVerifySchema);
