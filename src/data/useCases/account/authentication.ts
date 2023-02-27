@@ -13,6 +13,9 @@ export class Authentication implements AuthenticationType {
     if (!accountFound) {
       return false;
     }
+    if (!accountFound["verified"]) {
+      return false;
+    }
     const isEqual = this.compareHash.compare(password, accountFound.password);
     if (!isEqual) {
       return false;
