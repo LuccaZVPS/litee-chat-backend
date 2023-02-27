@@ -44,5 +44,11 @@ describe("Account routes", () => {
         .send({ ...validCreateDTO, password: "validPassword12" })
         .expect(409);
     });
+    test("should return 204 if valid body is provided", async () => {
+      await request(app)
+        .post("/api/account/signup")
+        .send({ ...validCreateDTO, password: "validPassword12" })
+        .expect(204);
+    });
   });
 });
