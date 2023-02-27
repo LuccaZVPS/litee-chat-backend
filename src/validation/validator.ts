@@ -21,7 +21,6 @@ export class Validator implements ValidatorType {
         errors: messages,
       };
     });
-    console.log(errors);
     return { errors: errors };
   }
 }
