@@ -69,7 +69,7 @@ describe("Account routes", () => {
         .send({ email: faker.internet.email(), password: "validPassword123" })
         .expect(401);
     });
-    test("should return 200 if the account provided exist", async () => {
+    test("should return 401 if the account provided is not verified", async () => {
       await request(app)
         .post("/api/account/signup")
         .send({
@@ -78,6 +78,26 @@ describe("Account routes", () => {
           password: "validPassword123",
         })
         .expect(204);
+      await request(app)
+        .post("/api/account/login")
+        .send({
+          email: "any@gmail.com",
+          password: "validPassword123",
+        })
+        .expect(401);
+    });
+    test("should return 200 if the account exist and if verified", async () => {
+      await request(app)
+        .post("/api/account/signup")
+        .send({
+          name: "lucca",
+          email: "any@gmail.com",
+          password: "validPassword123",
+        })
+        .expect(204);
+      const acountToVerify = await accountModel.find();
+      acountToVerify[0].verified = true;
+      acountToVerify[0].save();
       await request(app)
         .post("/api/account/login")
         .send({
