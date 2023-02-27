@@ -15,7 +15,8 @@ describe("Authentication", () => {
           imageURL: "",
           requests: [],
           password: "any_hash",
-        };
+          verified: true,
+        } as unknown as AccountModel;
       }
     }
     return new FindByEmailRepository();
@@ -70,6 +71,25 @@ describe("Authentication", () => {
     const response = await sut.auth(dto.email, dto.password);
     expect(response).toBe(false);
   });
+  test("should return false if account is not verified", async () => {
+    const { sut, findAccountByEmailRepositoryStub } = makeSut();
+    jest
+      .spyOn(findAccountByEmailRepositoryStub, "find")
+      .mockImplementationOnce(async () => {
+        return {
+          _id: "any_id",
+          email: "any_email",
+          name: "any_name",
+          friends: [],
+          imageURL: "",
+          requests: [],
+          password: "any_hash",
+          verified: false,
+        } as unknown as AccountModel;
+      });
+    const response = await sut.auth(dto.email, dto.password);
+    expect(response).toBe(false);
+  });
   test("should call compare method with correct value", async () => {
     const { sut, compareHashStub } = makeSut();
     const spy = jest.spyOn(compareHashStub, "compare");
@@ -103,6 +123,7 @@ describe("Authentication", () => {
       imageURL: "",
       requests: [],
       password: "any_hash",
+      verified: true,
     });
   });
 });
