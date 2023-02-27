@@ -34,5 +34,15 @@ describe("Account routes", () => {
         .send({ ...validCreateDTO, name: "name_bigger_than_12_characters" })
         .expect(400);
     });
+    test("should return 409 if email is already in use", async () => {
+      await request(app)
+        .post("/api/account/signup")
+        .send({ ...validCreateDTO, password: "validPassword12" })
+        .expect(204);
+      await request(app)
+        .post("/api/account/signup")
+        .send({ ...validCreateDTO, password: "validPassword12" })
+        .expect(409);
+    });
   });
 });
