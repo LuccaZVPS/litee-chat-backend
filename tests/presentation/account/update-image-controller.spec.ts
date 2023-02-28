@@ -1,6 +1,7 @@
 import { UpdateImage } from "../../../src/domain/useCases/account/update-image";
 import { UpdateImageController } from "../../../src/presentation/controllers/account/update-image-controller";
 import { InvalidBody } from "../../../src/presentation/errors/invalid-body-error";
+import fs from "fs";
 import crypto from "crypto";
 import {
   badRequest,
@@ -60,6 +61,9 @@ describe("Update image controller", () => {
     jest.spyOn(fileTypeStub, "checkFile").mockImplementationOnce(async () => {
       return { extension: "", isValid: false };
     });
+    jest.spyOn(fs, "unlinkSync").mockImplementationOnce(() => {
+      return;
+    });
     const response = await sut.handle({ file: { path: "any_file_path" } });
     expect(response).toEqual(
       badRequest(new InvalidBody("file extension not allowed"))
@@ -75,8 +79,19 @@ describe("Update image controller", () => {
     const { sut, updateImageStub } = makeSut();
     const spy = jest.spyOn(updateImageStub, "update");
     jest.spyOn(crypto, "randomUUID").mockImplementationOnce(() => "any_uuid");
-    await sut.handle({ file: { path: "any_file_path" }, userId: "any_id" });
-    expect(spy).toBeCalledWith("any_id", process.cwd() + "/" + "any_uuid.png");
+    await sut.handle({
+      file: {
+        path: "any_file_path",
+        mv: () => {
+          return;
+        },
+      },
+      userId: "any_id",
+    });
+    expect(spy).toBeCalledWith(
+      "any_id",
+      process.cwd() + "/uploads/" + "any_uuid.png"
+    );
   });
   test("should thorws if update method throws", async () => {
     const { sut, updateImageStub } = makeSut();
@@ -92,7 +107,12 @@ describe("Update image controller", () => {
   test("should return ok", async () => {
     const { sut } = makeSut();
     const response = await sut.handle({
-      file: { path: "any_file_path" },
+      file: {
+        path: "any_file_path",
+        mv: () => {
+          return;
+        },
+      },
       userId: "any_id",
     });
     expect(response).toEqual(ok("image updated"));

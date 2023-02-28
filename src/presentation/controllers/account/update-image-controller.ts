@@ -4,6 +4,7 @@ import { Controller, HttpResponse } from "../../protocols/controller";
 import { FileType } from "../../protocols/file-type";
 import { UpdateImage } from "../../../domain/useCases/account/update-image";
 import crypto from "crypto";
+import fs from "fs";
 export class UpdateImageController implements Controller {
   constructor(
     private readonly fileType: FileType,
@@ -15,10 +16,16 @@ export class UpdateImageController implements Controller {
         httpRequest.file.tempFilePath
       );
       if (!isValid.isValid) {
+        fs.unlinkSync(httpRequest.file.tempFilePath);
         return badRequest(new InvalidBody("file extension not allowed"));
       }
       const path =
-        process.cwd() + "/" + crypto.randomUUID() + "." + isValid.extension;
+        process.cwd() +
+        "/uploads/" +
+        crypto.randomUUID() +
+        "." +
+        isValid.extension;
+      httpRequest.file.mv(path);
       await this.updateImage.update(httpRequest.userId, path);
       return ok("image updated");
     } catch {

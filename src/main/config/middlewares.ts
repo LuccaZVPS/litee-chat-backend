@@ -6,7 +6,7 @@ export default (app: Express) => {
   app.use(
     fileUpload({
       useTempFiles: true,
-      tempFileDir: "/tmp",
+      tempFileDir: process.cwd() + "/tmp",
       limits: { fileSize: 2097152 },
       preservePath: true,
       preserveExtension: true,
