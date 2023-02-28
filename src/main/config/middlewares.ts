@@ -1,8 +1,9 @@
-import { Express, urlencoded, json } from "express";
+import { Express, urlencoded, json, static as staticExpress } from "express";
 import fileUpload from "express-fileupload";
 export default (app: Express) => {
   app.use(json());
   app.use(urlencoded({ extended: true }));
+  app.use("/uploads", staticExpress(process.cwd() + "/uploads"));
   app.use(
     fileUpload({
       useTempFiles: true,
