@@ -12,8 +12,14 @@ export const adptRoute = (controller: Controller) => {
     if (response.statusCode >= 200 && response.statusCode <= 299) {
       return res.status(response.statusCode).json(response.body);
     } else {
+      let message: any;
+      try {
+        message = JSON.parse(response.body.message);
+      } catch {
+        message = response.body;
+      }
       return res.status(response.statusCode).json({
-        error: JSON.parse(response.body.message),
+        error: message,
         statusCode: response.statusCode,
       });
     }

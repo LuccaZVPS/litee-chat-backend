@@ -9,5 +9,5 @@ const router = Router();
 router.post("/signup", adptRoute(makeCreateAccountController()));
 router.post("/login", adptRoute(makeAuthenticationController()));
 router.put("/image", adptRoute(makeUpdateImageController()));
-router.put("/verify/:id/:password", adptRoute(makeEmailVerifyController()));
+router.put("/verify/:_id/:password", adptRoute(makeEmailVerifyController()));
 export default router;
