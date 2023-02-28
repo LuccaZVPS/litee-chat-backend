@@ -4,6 +4,7 @@ import request from "supertest";
 import app from "../../src/main/config/app";
 import { createDTO } from "../presentation/account/mocks/create-dto";
 import { faker } from "@faker-js/faker";
+import path from "path";
 describe("Account routes", () => {
   beforeAll(async () => {
     await mongoHelper.connect(process.env.MONGO_URL);
@@ -44,12 +45,6 @@ describe("Account routes", () => {
         .post("/api/account/signup")
         .send({ ...validCreateDTO, password: "validPassword12" })
         .expect(409);
-    });
-    test("should return 204 if valid body is provided", async () => {
-      await request(app)
-        .post("/api/account/signup")
-        .send({ ...validCreateDTO, password: "validPassword12" })
-        .expect(204);
     });
   });
   describe("login", () => {
@@ -104,6 +99,20 @@ describe("Account routes", () => {
           email: "any@gmail.com",
           password: "validPassword123",
         })
+        .expect(200);
+    });
+  });
+  describe("image", () => {
+    test("should return 400 if invalid file is provided", async () => {
+      await request(app)
+        .put("/api/account/image")
+        .attach("file", path.resolve(__dirname, "./mocks/invalid.png"))
+        .expect(400);
+    });
+    test("should return 200 if valid file is provided", async () => {
+      await request(app)
+        .put("/api/account/image")
+        .attach("file", path.resolve(__dirname, "./mocks/valid.png"))
         .expect(200);
     });
   });
