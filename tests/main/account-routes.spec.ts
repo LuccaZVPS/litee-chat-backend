@@ -5,6 +5,8 @@ import app from "../../src/main/config/app";
 import { createDTO } from "../presentation/account/mocks/create-dto";
 import { faker } from "@faker-js/faker";
 import path from "path";
+import { randomSecret } from "./mocks/random-secret";
+import { emailVerifyModel } from "../../src/infra/db/models/email-verify-model-db";
 describe("Account routes", () => {
   beforeAll(async () => {
     await mongoHelper.connect(process.env.MONGO_URL);
@@ -12,10 +14,6 @@ describe("Account routes", () => {
   afterAll(async () => {
     await mongoHelper.close();
   });
-  afterEach(async () => {
-    await accountModel.deleteMany();
-  });
-
   describe("signup", () => {
     const validCreateDTO = { ...createDTO, password: "Valid123456" };
     test("should return 400 if invalid body is provided", async () => {
@@ -86,17 +84,20 @@ describe("Account routes", () => {
         .post("/api/account/signup")
         .send({
           name: "lucca",
-          email: "any@gmail.com",
+          email: "any2@gmail.com",
           password: "validPassword123",
         })
         .expect(204);
-      const acountToVerify = await accountModel.find();
-      acountToVerify[0].verified = true;
-      acountToVerify[0].save();
+
+      const acountToVerify = await accountModel.findOne({
+        email: "any2@gmail.com",
+      });
+      acountToVerify.verified = true;
+      acountToVerify.save();
       await request(app)
         .post("/api/account/login")
         .send({
-          email: "any@gmail.com",
+          email: "any2@gmail.com",
           password: "validPassword123",
         })
         .expect(200);
@@ -113,6 +114,39 @@ describe("Account routes", () => {
       await request(app)
         .put("/api/account/image")
         .attach("file", path.resolve(__dirname, "./mocks/valid.png"))
+        .expect(200);
+    });
+  });
+  describe("verify", () => {
+    test("should return 400 if invalid secret or id is provided", async () => {
+      await request(app)
+        .put("/api/account/verify/any_id/invalid_secret")
+        .expect(400);
+    });
+    test("should return 403 if secret or id do not exist in database", async () => {
+      await request(app)
+        .put("/api/account/verify/any_id/" + randomSecret)
+        .expect(403);
+    });
+    test("should return 200 and verify an account", async () => {
+      await request(app)
+        .post("/api/account/signup")
+        .send({
+          email: "lucca@gmail.com",
+          name: "lucca",
+          password: "validPassword12",
+        })
+        .expect(204);
+      const accounToVerify = await accountModel.findOne({
+        email: "lucca@gmail.com",
+      });
+      const verifyData = await emailVerifyModel.findOne({
+        accountId: accounToVerify._id,
+      });
+      await request(app)
+        .put(
+          "/api/account/verify/" + accounToVerify._id + "/" + verifyData.secret
+        )
         .expect(200);
     });
   });
