@@ -1,17 +1,17 @@
-import { UpdateImage } from "../../../src/domain/useCases/account/update-image";
-import { UpdateImageController } from "../../../src/presentation/controllers/account/update-image-controller";
-import { InvalidBody } from "../../../src/presentation/errors/invalid-body-error";
+import { UpdateImage } from "../../../../src/domain/useCases/account/update-image";
+import { UpdateImageController } from "../../../../src/presentation/controllers/account/update-image-controller";
+import { InvalidBody } from "../../../../src/presentation/errors/invalid-body-error";
 import fs from "fs";
 import crypto from "crypto";
 import {
   badRequest,
   ok,
   serverError,
-} from "../../../src/presentation/helpers/http-helper";
+} from "../../../../src/presentation/helpers/http-helper";
 import {
   checkFileReturnType,
   FileType,
-} from "../../../src/presentation/protocols/file-type";
+} from "../../../../src/presentation/protocols/file-type";
 
 describe("Update image controller", () => {
   const makeUpdateImageStub = () => {

@@ -1,7 +1,7 @@
 import { FindAccountByEmailRepository } from "../../../src/data/protocols/account/find-account-by-email-repository";
 import { FindAccountByEmail } from "../../../src/data/useCases/account/find-account-by-email";
 import { AccountModel } from "../../../src/domain/models/account";
-import { anyAccount } from "../../presentation/account/mocks/fake-account";
+import { anyAccount } from "../../presentation/controllers/account/mocks/fake-account";
 import { faker } from "@faker-js/faker";
 describe("FindAccountByEmail", () => {
   const makeFindAccountByEmailRepository = () => {

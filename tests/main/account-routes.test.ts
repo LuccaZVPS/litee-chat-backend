@@ -2,7 +2,7 @@ import { mongoHelper } from "../../src/infra/db/connection";
 import { accountModel } from "../../src/infra/db/models/account-model-db";
 import request from "supertest";
 import app from "../../src/main/config/app";
-import { createDTO } from "../presentation/account/mocks/create-dto";
+import { createDTO } from "../presentation/controllers/account/mocks/create-dto";
 import { faker } from "@faker-js/faker";
 import path from "path";
 import { randomSecret } from "./mocks/random-secret";

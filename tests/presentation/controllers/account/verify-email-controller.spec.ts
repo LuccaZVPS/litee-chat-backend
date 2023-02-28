@@ -1,16 +1,16 @@
-import { EmailVerify } from "../../../src/domain/useCases/account/email-verify";
-import { EmailVerifyController } from "../../../src/presentation/controllers/account/email-verify-controller";
-import { InvalidBody } from "../../../src/presentation/errors/invalid-body-error";
+import { EmailVerify } from "../../../../src/domain/useCases/account/email-verify";
+import { EmailVerifyController } from "../../../../src/presentation/controllers/account/email-verify-controller";
+import { InvalidBody } from "../../../../src/presentation/errors/invalid-body-error";
 import {
   badRequest,
   forbidden,
   ok,
   serverError,
-} from "../../../src/presentation/helpers/http-helper";
+} from "../../../../src/presentation/helpers/http-helper";
 import {
   errorType,
   Validator,
-} from "../../../src/presentation/protocols/validator";
+} from "../../../../src/presentation/protocols/validator";
 
 describe("Verify email controller", () => {
   const makeEmailVerifyStub = () => {

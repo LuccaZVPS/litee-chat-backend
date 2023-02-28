@@ -2,7 +2,7 @@ import { AccountModel } from "../../../src/domain/models/account";
 import { mongoHelper } from "../../../src/infra/db/connection";
 import { accountModel } from "../../../src/infra/db/models/account-model-db";
 import { AccountRepository } from "../../../src/infra/db/repositories/account-repository";
-import { createDTO } from "../../presentation/account/mocks/create-dto";
+import { createDTO } from "../../presentation/controllers/account/mocks/create-dto";
 describe("Account Repository", () => {
   beforeAll(async () => {
     await mongoHelper.connect(process.env.MONGO_URL);

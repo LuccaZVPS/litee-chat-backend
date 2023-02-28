@@ -1,18 +1,18 @@
-import { AuthenticationController } from "../../../src/presentation/controllers/account/authentication-controller";
+import { AuthenticationController } from "../../../../src/presentation/controllers/account/authentication-controller";
 import { faker } from "@faker-js/faker";
 import {
   errorType,
   Validator,
-} from "../../../src/presentation/protocols/validator";
+} from "../../../../src/presentation/protocols/validator";
 import {
   badRequest,
   serverError,
   unauthorized,
-} from "../../../src/presentation/helpers/http-helper";
-import { UnauthorizedError } from "../../../src/presentation/errors/unauthorized-error";
-import { Authentication } from "../../../src/domain/useCases/account/authentication";
-import { InvalidBody } from "../../../src/presentation/errors/invalid-body-error";
-import { AccountSession } from "../../../src/domain/useCases/account/create-account";
+} from "../../../../src/presentation/helpers/http-helper";
+import { UnauthorizedError } from "../../../../src/presentation/errors/unauthorized-error";
+import { Authentication } from "../../../../src/domain/useCases/account/authentication";
+import { InvalidBody } from "../../../../src/presentation/errors/invalid-body-error";
+import { AccountSession } from "../../../../src/domain/useCases/account/create-account";
 describe("Authentication Controller", () => {
   const makeAuthenticationStub = () => {
     class AuthenticationStub implements Authentication {

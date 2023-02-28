@@ -1,4 +1,4 @@
-import { AccountModel } from "../../../../src/domain/models/account";
+import { AccountModel } from "../../../../../src/domain/models/account";
 import { faker } from "@faker-js/faker";
 import { randomUUID } from "crypto";
 export const anyAccount: AccountModel = {

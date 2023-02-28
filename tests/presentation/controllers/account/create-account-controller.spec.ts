@@ -1,24 +1,24 @@
-import { CreateAccountController } from "../../../src/presentation/controllers/account/create-account-controller";
+import { CreateAccountController } from "../../../../src/presentation/controllers/account/create-account-controller";
 import {
   errorType,
   Validator,
-} from "../../../src/presentation/protocols/validator";
-import { InvalidBody } from "../../../src/presentation/errors/invalid-body-error";
+} from "../../../../src/presentation/protocols/validator";
+import { InvalidBody } from "../../../../src/presentation/errors/invalid-body-error";
 import { createDTO } from "./mocks/create-dto";
 import {
   badRequest,
   conflict,
   created,
   serverError,
-} from "../../../src/presentation/helpers/http-helper";
-import { FindAccountByEmail } from "../../../src/domain/useCases/account/find-account-by-email";
-import { AccountModel } from "../../../src/domain/models/account";
+} from "../../../../src/presentation/helpers/http-helper";
+import { FindAccountByEmail } from "../../../../src/domain/useCases/account/find-account-by-email";
+import { AccountModel } from "../../../../src/domain/models/account";
 import { anyAccount } from "./mocks/fake-account";
-import { UsedEmailError } from "../../../src/presentation/errors/used-email-error";
+import { UsedEmailError } from "../../../../src/presentation/errors/used-email-error";
 import {
   AccountSession,
   CreateAccount,
-} from "../../../src/domain/useCases/account/create-account";
+} from "../../../../src/domain/useCases/account/create-account";
 describe("Create Account Controller", () => {
   const makeCreateAccountStub = () => {
     class CreateAccountStub implements CreateAccount {
