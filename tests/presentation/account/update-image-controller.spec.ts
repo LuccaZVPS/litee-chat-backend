@@ -1,15 +1,16 @@
 import { UpdateImage } from "../../../src/domain/useCases/account/update-image";
-import {
-  unlinkFile,
-  UpdateImageController,
-} from "../../../src/presentation/controllers/account/update-image-controller";
+import { UpdateImageController } from "../../../src/presentation/controllers/account/update-image-controller";
 import { InvalidBody } from "../../../src/presentation/errors/invalid-body-error";
+import crypto from "crypto";
 import {
   badRequest,
   ok,
   serverError,
 } from "../../../src/presentation/helpers/http-helper";
-import { FileType } from "../../../src/presentation/protocols/file-type";
+import {
+  checkFileReturnType,
+  FileType,
+} from "../../../src/presentation/protocols/file-type";
 
 describe("Update image controller", () => {
   const makeUpdateImageStub = () => {
@@ -22,8 +23,11 @@ describe("Update image controller", () => {
   };
   const makeFileTypeStub = () => {
     class FileTypeStub implements FileType {
-      async checkFile(): Promise<boolean> {
-        return true;
+      async checkFile(): Promise<checkFileReturnType> {
+        return {
+          isValid: true,
+          extension: "png",
+        };
       }
     }
     return new FileTypeStub();
@@ -40,7 +44,7 @@ describe("Update image controller", () => {
   test("should call file type method with correct value", async () => {
     const { sut, fileTypeStub } = makeSut();
     const spy = jest.spyOn(fileTypeStub, "checkFile");
-    await sut.handle({ file: { path: "any_file_path" } });
+    await sut.handle({ file: { tempFilePath: "any_file_path" } });
     expect(spy).toBeCalledWith("any_file_path");
   });
   test("should return server error if file type method throws", async () => {
@@ -54,33 +58,27 @@ describe("Update image controller", () => {
   test("should return bad request if file extension is not allowed", async () => {
     const { sut, fileTypeStub } = makeSut();
     jest.spyOn(fileTypeStub, "checkFile").mockImplementationOnce(async () => {
-      return false;
+      return { extension: "", isValid: false };
     });
-    jest.spyOn(unlinkFile, "unlink").mockImplementationOnce(() => {
-      return;
-    });
-
     const response = await sut.handle({ file: { path: "any_file_path" } });
     expect(response).toEqual(
       badRequest(new InvalidBody("file extension not allowed"))
     );
   });
-  test("should call unlinkSync with correct path if file extension is not allowed", async () => {
-    const { sut, fileTypeStub } = makeSut();
-    jest.spyOn(fileTypeStub, "checkFile").mockImplementationOnce(async () => {
-      return false;
-    });
-    const spy = jest.spyOn(unlinkFile, "unlink");
-    await sut.handle({ file: { path: "./any_file_path" } });
-    expect(spy).toBeCalledWith("./any_file_path");
+  test("should call uuid", async () => {
+    const { sut } = makeSut();
+    const spy = jest.spyOn(crypto, "randomUUID");
+    await sut.handle({ file: { path: "any_file_path" } });
+    expect(spy).toHaveBeenCalled();
   });
   test("should call update method with correct values", async () => {
     const { sut, updateImageStub } = makeSut();
     const spy = jest.spyOn(updateImageStub, "update");
+    jest.spyOn(crypto, "randomUUID").mockImplementationOnce(() => "any_uuid");
     await sut.handle({ file: { path: "any_file_path" }, userId: "any_id" });
-    expect(spy).toBeCalledWith("any_id", "any_file_path");
+    expect(spy).toBeCalledWith("any_id", process.cwd() + "/" + "any_uuid.png");
   });
-  test("should call update method with correct values", async () => {
+  test("should thorws if update method throws", async () => {
     const { sut, updateImageStub } = makeSut();
     jest.spyOn(updateImageStub, "update").mockImplementationOnce(async () => {
       throw new Error();
