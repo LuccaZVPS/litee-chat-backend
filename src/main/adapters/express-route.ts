@@ -6,6 +6,7 @@ export const adptRoute = (controller: Controller) => {
     const request = {
       body: { ...req?.body, ...req?.params },
       account: req.account,
+      file: req.files?.file,
     };
     const response = await controller.handle(request);
     if (response.statusCode >= 200 && response.statusCode <= 299) {
