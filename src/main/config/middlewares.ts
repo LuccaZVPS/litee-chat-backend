@@ -11,6 +11,7 @@ export default (app: Express) => {
       limits: { fileSize: 2097152 },
       preservePath: true,
       preserveExtension: true,
+      abortOnLimit: true,
     })
   );
 };
