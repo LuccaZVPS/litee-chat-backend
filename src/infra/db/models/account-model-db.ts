@@ -7,7 +7,6 @@ export const accountSchema = new Mongoose.Schema({
   email: { type: String, unique: true, required: true },
   password: { type: String, required: true },
   imageURL: { type: String },
-  verified: { type: Boolean, default: false },
   friends: [
     {
       type: Mongoose.Schema.Types.String,
