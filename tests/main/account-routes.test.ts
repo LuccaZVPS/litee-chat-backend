@@ -7,7 +7,22 @@ import { faker } from "@faker-js/faker";
 import path from "path";
 import { randomSecret } from "./mocks/random-secret";
 import { emailVerifyModel } from "../../src/infra/db/models/email-verify-model-db";
+import session from "express-session";
+import express from "express";
 describe("Account routes", () => {
+  const mockApp = express();
+  mockApp.use(
+    session({
+      secret: "any_account",
+    })
+  );
+  mockApp.all("*", function (req, res, next) {
+    //authenticated(req, res, next);
+    //OR
+    req.session["account"] = { _id: "any_id" };
+    next();
+  });
+  mockApp.use(app);
   beforeAll(async () => {
     await mongoHelper.connect(process.env.MONGO_URL);
   });
@@ -34,7 +49,7 @@ describe("Account routes", () => {
         .send({ ...validCreateDTO, name: "name_bigger_than_12_characters" })
         .expect(400);
     });
-    test("should return 409 if email is already in use", async () => {
+    test("should return 409 if email is already in usea", async () => {
       await request(app)
         .post("/api/account/signup")
         .send({ ...validCreateDTO, password: "validPassword12" })
@@ -105,13 +120,13 @@ describe("Account routes", () => {
   });
   describe("image", () => {
     test("should return 400 if invalid file is provided", async () => {
-      await request(app)
+      await request(mockApp)
         .put("/api/account/image")
         .attach("file", path.resolve(__dirname, "./mocks/invalid.png"))
         .expect(400);
     });
     test("should return 200 if valid file is provided", async () => {
-      await request(app)
+      await request(mockApp)
         .put("/api/account/image")
         .attach("file", path.resolve(__dirname, "./mocks/valid.png"))
         .expect(200);
