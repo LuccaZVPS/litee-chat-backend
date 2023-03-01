@@ -1,5 +1,9 @@
 import { HttpRequest, HttpResponse } from "./controller";
 
 export interface middleware {
-  run(body: HttpRequest): Promise<HttpResponse>;
+  run(middlewareParams: MiddlewareParams): Promise<HttpResponse>;
+}
+export interface MiddlewareParams {
+  session: any;
+  headers: any;
 }

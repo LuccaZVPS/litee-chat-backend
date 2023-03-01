@@ -14,21 +14,18 @@ describe("Auth middleware", () => {
   test("should return 401 if account is not saved in session", async () => {
     const { sut } = makeSut();
     const response = await sut.run({
-      body: {
-        session: {},
-      },
+      headers: {},
+      session: {},
     });
     expect(response).toEqual(unauthorized(new UnauthorizedError()));
   });
   test("should return 200 if account is saved in session", async () => {
     const { sut } = makeSut();
     const response = await sut.run({
-      body: {
-        session: {
-          account: { _id: "any_id" },
-        },
-      },
+      headers: {},
+      session: { account: { _id: "any_id" } },
     });
+
     expect(response).toEqual(ok(""));
   });
 });
