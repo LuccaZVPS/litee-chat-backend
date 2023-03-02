@@ -5,6 +5,7 @@ export default (app: Express) => {
   app.use(urlencoded({ extended: true }));
   app.use("/uploads", staticExpress(process.cwd() + "/uploads"));
   app.use(
+    "/api/account/image",
     fileUpload({
       useTempFiles: true,
       tempFileDir: process.cwd() + "/tmp",
