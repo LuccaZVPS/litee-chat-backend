@@ -37,6 +37,12 @@ export const conflict = (data: any) => {
     statusCode: 409,
   };
 };
+export const notFound = (data: any) => {
+  return {
+    body: data,
+    statusCode: 404,
+  };
+};
 export const serverError = () => ({
   statusCode: 500,
   body: new ServerError(),

@@ -1,6 +1,6 @@
 import { FindAccountByEmail } from "../../../domain/useCases/account/find-account-by-email";
 import { InvalidBody } from "../../errors/invalid-body-error";
-import { badRequest, serverError } from "../../helpers/http-helper";
+import { badRequest, notFound, serverError } from "../../helpers/http-helper";
 import {
   Controller,
   HttpRequest,
@@ -26,7 +26,12 @@ export class RequestPasswordChangeController implements Controller {
       if (isValid.errors.length > 0) {
         return badRequest(new InvalidBody(isValid.errors));
       }
-      await this.findAccountByEmail.findByEmail(requestPasswordChangeDTO.email);
+      const account = await this.findAccountByEmail.findByEmail(
+        requestPasswordChangeDTO.email
+      );
+      if (!account || !account._id) {
+        return notFound("email cant be found");
+      }
       return;
     } catch {
       return serverError();

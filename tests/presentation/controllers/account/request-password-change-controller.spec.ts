@@ -8,6 +8,7 @@ import {
 import { faker } from "@faker-js/faker";
 import {
   badRequest,
+  notFound,
   serverError,
 } from "../../../../src/presentation/helpers/http-helper";
 import { InvalidBody } from "../../../../src/presentation/errors/invalid-body-error";
@@ -78,5 +79,15 @@ describe("Request password change controller", () => {
     });
     const response = await sut.handle({ body: { email: anyEmail } });
     expect(response).toEqual(serverError());
+  });
+  test("should return notFound if findByEmail return void", async () => {
+    const { sut, findAccountByEmail } = makeSut();
+    jest
+      .spyOn(findAccountByEmail, "findByEmail")
+      .mockImplementationOnce(async () => {
+        return;
+      });
+    const response = await sut.handle({ body: { email: anyEmail } });
+    expect(response).toEqual(notFound("email cant be found"));
   });
 });
