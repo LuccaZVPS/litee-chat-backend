@@ -1,6 +1,5 @@
 import { CreateAccountRepository } from "../../../data/protocols/account/create-account-repository";
 import { FindAccountByEmailRepository } from "../../../data/protocols/account/find-account-by-email-repository";
-import { EmailVerifyRepository } from "../../../data/protocols/account/email-verify-repository";
 import { AccountModel } from "../../../domain/models/account";
 import { AccountSession } from "../../../domain/useCases/account/create-account";
 import { CreateAccountDTO } from "../../../presentation/controllers/account/DTOs/create-account-dto";
@@ -10,7 +9,6 @@ export class AccountRepository
   implements
     CreateAccountRepository,
     FindAccountByEmailRepository,
-    EmailVerifyRepository,
     UpdateImageRepository
 {
   async create(createAccountDTO: CreateAccountDTO): Promise<AccountSession> {
@@ -30,17 +28,6 @@ export class AccountRepository
       return;
     }
     return account as unknown as void;
-  }
-  async verify(_id: string): Promise<void> {
-    await accountModel.findOneAndUpdate(
-      { _id },
-      {
-        $set: {
-          verified: true,
-        },
-      }
-    );
-    return;
   }
   async update(_id: string, path: string): Promise<void> {
     await accountModel.findOneAndUpdate({ _id }, { $set: { imageURL: path } });
