@@ -6,6 +6,7 @@ import {
   Validator,
 } from "../../../../src/presentation/protocols/validator";
 import { faker } from "@faker-js/faker";
+import { serverError } from "../../../../src/presentation/helpers/http-helper";
 describe("Request password change controller", () => {
   const makeFindAccountByEmail = () => {
     class FindByEmailStub implements FindAccountByEmail {
@@ -41,5 +42,13 @@ describe("Request password change controller", () => {
     const spy = jest.spyOn(validatorStub, "validate");
     await sut.handle({ body: { email: anyEmail } });
     expect(spy).toHaveBeenCalledWith({ email: anyEmail });
+  });
+  test("should return server error if validator throws", async () => {
+    const { sut, validatorStub } = makeSut();
+    jest.spyOn(validatorStub, "validate").mockImplementationOnce(() => {
+      throw new Error();
+    });
+    const response = await sut.handle({ body: { email: anyEmail } });
+    expect(response).toEqual(serverError());
   });
 });

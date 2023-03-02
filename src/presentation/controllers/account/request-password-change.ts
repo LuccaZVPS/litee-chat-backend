@@ -1,4 +1,5 @@
 import { FindAccountByEmail } from "../../../domain/useCases/account/find-account-by-email";
+import { serverError } from "../../helpers/http-helper";
 import {
   Controller,
   HttpRequest,
@@ -13,13 +14,17 @@ export class RequestPasswordChangeController implements Controller {
     findAccountByEmail: FindAccountByEmail
   ) {}
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
-    const requestPasswordChange = new RequestPasswordChangeDTO();
-    for (const prop in requestPasswordChange) {
-      if (httpRequest?.body[prop]) {
-        requestPasswordChange[prop] = httpRequest.body[prop];
+    try {
+      const requestPasswordChange = new RequestPasswordChangeDTO();
+      for (const prop in requestPasswordChange) {
+        if (httpRequest?.body[prop]) {
+          requestPasswordChange[prop] = httpRequest.body[prop];
+        }
       }
+      const bodyErrors = await this.validator.validate(requestPasswordChange);
+      return;
+    } catch {
+      return serverError();
     }
-    const bodyErrors = await this.validator.validate(requestPasswordChange);
-    return;
   }
 }
