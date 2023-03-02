@@ -1,4 +1,4 @@
-export interface EmailStatus {
+export interface EmailStatusModel {
   _id: string;
   secret: string;
   accountId: string;
