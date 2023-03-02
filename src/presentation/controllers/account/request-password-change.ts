@@ -1,4 +1,5 @@
 import { FindAccountByEmail } from "../../../domain/useCases/account/find-account-by-email";
+import { RequestPasswordChange } from "../../../domain/useCases/account/request-password-change";
 import { InvalidBody } from "../../errors/invalid-body-error";
 import { badRequest, notFound, serverError } from "../../helpers/http-helper";
 import {
@@ -12,7 +13,8 @@ import { RequestPasswordChangeDTO } from "./DTOs/request-password-change-dto";
 export class RequestPasswordChangeController implements Controller {
   constructor(
     private readonly validator: Validator,
-    private readonly findAccountByEmail: FindAccountByEmail
+    private readonly findAccountByEmail: FindAccountByEmail,
+    private readonly RequestChange: RequestPasswordChange
   ) {}
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
@@ -32,6 +34,7 @@ export class RequestPasswordChangeController implements Controller {
       if (!account || !account._id) {
         return notFound("email cant be found");
       }
+      await this.RequestChange.createRequest(account._id);
       return;
     } catch {
       return serverError();

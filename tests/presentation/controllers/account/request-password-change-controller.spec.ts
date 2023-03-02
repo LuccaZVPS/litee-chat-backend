@@ -12,11 +12,14 @@ import {
   serverError,
 } from "../../../../src/presentation/helpers/http-helper";
 import { InvalidBody } from "../../../../src/presentation/errors/invalid-body-error";
+import { RequestPasswordChange } from "../../../../src/domain/useCases/account/request-password-change";
+import { anyAccount } from "./mocks/fake-account";
 describe("Request password change controller", () => {
+  const accountMock = anyAccount;
   const makeFindAccountByEmail = () => {
     class FindByEmailStub implements FindAccountByEmail {
       async findByEmail(): Promise<AccountModel | void> {
-        return;
+        return accountMock;
       }
     }
     return new FindByEmailStub();
@@ -29,15 +32,26 @@ describe("Request password change controller", () => {
     }
     return new ValidatorStub();
   };
+  const makeRequestPasswordChangeStub = () => {
+    class RequestPasswordChangeStub implements RequestPasswordChange {
+      async createRequest(accountId: string): Promise<void> {
+        return;
+      }
+    }
+    return new RequestPasswordChangeStub();
+  };
   const makeSut = () => {
     const validatorStub = makeValidatorStub();
     const findAccountByEmail = makeFindAccountByEmail();
+    const requestPasswordChangeStub = makeRequestPasswordChangeStub();
     return {
       validatorStub,
       findAccountByEmail,
+      requestPasswordChangeStub,
       sut: new RequestPasswordChangeController(
         validatorStub,
-        findAccountByEmail
+        findAccountByEmail,
+        requestPasswordChangeStub
       ),
     };
   };
@@ -89,5 +103,11 @@ describe("Request password change controller", () => {
       });
     const response = await sut.handle({ body: { email: anyEmail } });
     expect(response).toEqual(notFound("email cant be found"));
+  });
+  test("should call createRequest with correct value", async () => {
+    const { sut, requestPasswordChangeStub } = makeSut();
+    const spy = jest.spyOn(requestPasswordChangeStub, "createRequest");
+    await sut.handle({ body: { email: anyEmail } });
+    expect(spy).toHaveBeenCalledWith(accountMock._id);
   });
 });
