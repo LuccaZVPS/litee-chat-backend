@@ -65,4 +65,10 @@ describe("Request password change controller", () => {
       badRequest(new InvalidBody([{ errors: ["any"], field: "any" }]))
     );
   });
+  test("should call find method with correct value", async () => {
+    const { sut, findAccountByEmail } = makeSut();
+    const spy = jest.spyOn(findAccountByEmail, "findByEmail");
+    await sut.handle({ body: { email: anyEmail } });
+    expect(spy).toHaveBeenCalledWith(anyEmail);
+  });
 });

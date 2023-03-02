@@ -12,20 +12,21 @@ import { RequestPasswordChangeDTO } from "./DTOs/request-password-change-dto";
 export class RequestPasswordChangeController implements Controller {
   constructor(
     private readonly validator: Validator,
-    findAccountByEmail: FindAccountByEmail
+    private readonly findAccountByEmail: FindAccountByEmail
   ) {}
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      const requestPasswordChange = new RequestPasswordChangeDTO();
-      for (const prop in requestPasswordChange) {
+      const requestPasswordChangeDTO = new RequestPasswordChangeDTO();
+      for (const prop in requestPasswordChangeDTO) {
         if (httpRequest?.body[prop]) {
-          requestPasswordChange[prop] = httpRequest.body[prop];
+          requestPasswordChangeDTO[prop] = httpRequest.body[prop];
         }
       }
-      const isValid = await this.validator.validate(requestPasswordChange);
-      if (isValid.errors) {
+      const isValid = await this.validator.validate(requestPasswordChangeDTO);
+      if (isValid.errors.length > 0) {
         return badRequest(new InvalidBody(isValid.errors));
       }
+      await this.findAccountByEmail.findByEmail(requestPasswordChangeDTO.email);
       return;
     } catch {
       return serverError();
