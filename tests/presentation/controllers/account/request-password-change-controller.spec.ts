@@ -71,4 +71,12 @@ describe("Request password change controller", () => {
     await sut.handle({ body: { email: anyEmail } });
     expect(spy).toHaveBeenCalledWith(anyEmail);
   });
+  test("should returns serverError if find method throws", async () => {
+    const { sut, findAccountByEmail } = makeSut();
+    jest.spyOn(findAccountByEmail, "findByEmail").mockImplementationOnce(() => {
+      throw new Error();
+    });
+    const response = await sut.handle({ body: { email: anyEmail } });
+    expect(response).toEqual(serverError());
+  });
 });
