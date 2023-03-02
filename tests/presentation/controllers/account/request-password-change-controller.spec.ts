@@ -9,6 +9,7 @@ import { faker } from "@faker-js/faker";
 import {
   badRequest,
   notFound,
+  ok,
   serverError,
 } from "../../../../src/presentation/helpers/http-helper";
 import { InvalidBody } from "../../../../src/presentation/errors/invalid-body-error";
@@ -119,5 +120,10 @@ describe("Request password change controller", () => {
       });
     const response = await sut.handle({ body: { email: anyEmail } });
     expect(response).toEqual(serverError());
+  });
+  test("should return ok", async () => {
+    const { sut } = makeSut();
+    const response = await sut.handle({ body: { email: anyEmail } });
+    expect(response).toEqual(ok("sucess"));
   });
 });

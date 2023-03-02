@@ -1,7 +1,12 @@
 import { FindAccountByEmail } from "../../../domain/useCases/account/find-account-by-email";
 import { RequestPasswordChange } from "../../../domain/useCases/account/request-password-change";
 import { InvalidBody } from "../../errors/invalid-body-error";
-import { badRequest, notFound, serverError } from "../../helpers/http-helper";
+import {
+  badRequest,
+  notFound,
+  ok,
+  serverError,
+} from "../../helpers/http-helper";
 import {
   Controller,
   HttpRequest,
@@ -35,7 +40,7 @@ export class RequestPasswordChangeController implements Controller {
         return notFound("email cant be found");
       }
       await this.RequestChange.createRequest(account._id);
-      return;
+      return ok("sucess");
     } catch {
       return serverError();
     }
