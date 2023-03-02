@@ -110,4 +110,14 @@ describe("Request password change controller", () => {
     await sut.handle({ body: { email: anyEmail } });
     expect(spy).toHaveBeenCalledWith(accountMock._id);
   });
+  test("should return serverError if createRequest throws", async () => {
+    const { sut, requestPasswordChangeStub } = makeSut();
+    jest
+      .spyOn(requestPasswordChangeStub, "createRequest")
+      .mockImplementationOnce(() => {
+        throw new Error();
+      });
+    const response = await sut.handle({ body: { email: anyEmail } });
+    expect(response).toEqual(serverError());
+  });
 });
