@@ -103,6 +103,14 @@ describe("Account routes", () => {
           password: "validPassword123",
         })
         .expect(204);
+      const accountToverify = await accountModel.findOne({
+        email: "any2@gmail.com",
+      });
+      const emailToVerify = await emailStatusModel.findOne({
+        accountId: accountToverify._id,
+      });
+      emailToVerify.verified = true;
+      await emailToVerify.save();
       await request(app)
         .post("/api/account/login")
         .send({
