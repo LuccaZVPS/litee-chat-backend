@@ -1,6 +1,6 @@
 import { mongoHelper } from "../../../src/infra/db/connection";
-import { emailVerifyModel } from "../../../src/infra/db/models/email-verify-model-db";
-import { EmailVerifyRepository } from "../../../src/infra/db/repositories/email-verify-repository";
+import { emailStatusModel } from "../../../src/infra/db/models/email-staus-model-db";
+import { EmailVerifyRepository } from "../../../src/infra/db/repositories/email-status-repository";
 
 describe("EmailVerify Repository", () => {
   beforeAll(async () => {
@@ -10,7 +10,7 @@ describe("EmailVerify Repository", () => {
     await mongoHelper.close();
   });
   beforeEach(async () => {
-    await emailVerifyModel.deleteMany();
+    await emailStatusModel.deleteMany();
   });
   const makeSut = () => {
     return {
@@ -20,13 +20,13 @@ describe("EmailVerify Repository", () => {
   describe("FindVerificationRepository", () => {
     test("should call findOne with correct value", async () => {
       const { sut } = makeSut();
-      const spy = jest.spyOn(emailVerifyModel, "findOne");
+      const spy = jest.spyOn(emailStatusModel, "findOne");
       await sut.find("any_id");
       expect(spy).toBeCalledWith({ accountId: "any_id" });
     });
     test("should throws if findOne throws", async () => {
       const { sut } = makeSut();
-      jest.spyOn(emailVerifyModel, "findOne").mockImplementationOnce(() => {
+      jest.spyOn(emailStatusModel, "findOne").mockImplementationOnce(() => {
         throw new Error();
       });
       const response = sut.find("any_id");
@@ -39,24 +39,25 @@ describe("EmailVerify Repository", () => {
     });
     test("should return the correct value", async () => {
       const { sut } = makeSut();
-      const verificationToFind = await emailVerifyModel.create({
+      const verificationToFind = await emailStatusModel.create({
         accountId: "any_id",
         secret: "any_secret",
       });
       const response = await sut.find(verificationToFind.accountId);
-      expect(response).toBe("any_secret");
+      expect(response["secret"]).toBe("any_secret");
+      expect(response["accountId"]).toBe("any_id");
     });
   });
   describe("CreateVerificationRepository", () => {
     test("should call create method with correct value", async () => {
       const { sut } = makeSut();
-      const spy = jest.spyOn(emailVerifyModel, "create");
+      const spy = jest.spyOn(emailStatusModel, "create");
       await sut.create("any_id", "any_secret");
       expect(spy).toBeCalledWith({ accountId: "any_id", secret: "any_secret" });
     });
     test("should throws if create method throws", () => {
       const { sut } = makeSut();
-      jest.spyOn(emailVerifyModel, "create").mockImplementationOnce(() => {
+      jest.spyOn(emailStatusModel, "create").mockImplementationOnce(() => {
         throw new Error();
       });
       const response = sut.create("any_id", "any_secret");

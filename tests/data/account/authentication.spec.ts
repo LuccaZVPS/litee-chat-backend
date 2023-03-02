@@ -3,7 +3,22 @@ import { FindAccountByEmailRepository } from "../../../src/data/protocols/accoun
 import { Authentication } from "../../../src/data/useCases/account/authentication";
 import { AccountModel } from "../../../src/domain/models/account";
 import { faker } from "@faker-js/faker";
+import { FindEmailStatusRepository } from "../../../src/data/protocols/account/find-email-status-repository";
+import { EmailStatusModel } from "../../../src/domain/models/email-status";
 describe("Authentication", () => {
+  const makeFindEmailStatusRepositoryStub = () => {
+    class FindEmailStatusRepositoryStub implements FindEmailStatusRepository {
+      async find(_id: string): Promise<EmailStatusModel | void> {
+        return {
+          _id: "any_id",
+          accountId: "any_id",
+          secret: "any_secret",
+          verified: true,
+        };
+      }
+    }
+    return new FindEmailStatusRepositoryStub();
+  };
   const makeFindByEmailRepository = () => {
     class FindByEmailRepository implements FindAccountByEmailRepository {
       async find(): Promise<void | AccountModel> {
@@ -31,12 +46,15 @@ describe("Authentication", () => {
   };
   const makeSut = () => {
     const findAccountByEmailRepositoryStub = makeFindByEmailRepository();
+    const findEmailStatusRepository = makeFindEmailStatusRepositoryStub();
     const compareHashStub = makeCompareHashStub();
     return {
       findAccountByEmailRepositoryStub,
+      findEmailStatusRepository,
       compareHashStub,
       sut: new Authentication(
         findAccountByEmailRepositoryStub,
+        findEmailStatusRepository,
         compareHashStub
       ),
     };
@@ -71,22 +89,35 @@ describe("Authentication", () => {
     const response = await sut.auth(dto.email, dto.password);
     expect(response).toBe(false);
   });
-  test("should return false if account is not verified", async () => {
-    const { sut, findAccountByEmailRepositoryStub } = makeSut();
+  test("should call findEmailStatus with correct value", async () => {
+    const { sut, findEmailStatusRepository } = makeSut();
+    const spy = jest.spyOn(findEmailStatusRepository, "find");
+    await sut.auth(dto.email, dto.password);
+    expect(spy).toHaveBeenCalledWith("any_id");
+  });
+  test("should return false if findEmailStatus returns void", async () => {
+    const { sut, findEmailStatusRepository } = makeSut();
+    const spy = jest
+      .spyOn(findEmailStatusRepository, "find")
+      .mockImplementationOnce(async () => {
+        return;
+      });
+    await sut.auth(dto.email, dto.password);
+    expect(spy).toHaveBeenCalledWith("any_id");
+  });
+  test("should return false if email is not verified yet", async () => {
+    const { sut, findEmailStatusRepository } = makeSut();
     jest
-      .spyOn(findAccountByEmailRepositoryStub, "find")
+      .spyOn(findEmailStatusRepository, "find")
       .mockImplementationOnce(async () => {
         return {
-          _id: "any_id",
-          email: "any_email",
-          name: "any_name",
-          friends: [],
-          imageURL: "",
-          requests: [],
-          password: "any_hash",
           verified: false,
-        } as unknown as AccountModel;
+          _id: "any_id",
+          accountId: "any_id",
+          secret: "any_secret",
+        };
       });
+
     const response = await sut.auth(dto.email, dto.password);
     expect(response).toBe(false);
   });

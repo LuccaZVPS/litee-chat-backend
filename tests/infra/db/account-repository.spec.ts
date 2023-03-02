@@ -61,24 +61,6 @@ describe("Account Repository", () => {
       expect(response.email).toBe(accountToFind.email);
     });
   });
-  describe("EmailVerifyRepository", () => {
-    test("should call findOneAndUpdate with correct value", async () => {
-      const { sut } = makeSut();
-      const spy = jest.spyOn(accountModel, "findOneAndUpdate");
-      await sut.verify("any_id");
-      expect(spy).toHaveBeenCalledWith(
-        { _id: "any_id" },
-        { $set: { verified: true } }
-      );
-    });
-    test("should verify an account", async () => {
-      const { sut } = makeSut();
-      const accountToVerify = await accountModel.create({ ...createDTO });
-      await sut.verify(accountToVerify._id);
-      const accountVerified = await accountModel.find();
-      expect(accountVerified[0].verified).toBe(true);
-    });
-  });
 
   describe("UpdateImageRepository", () => {
     test("should call findOneAndUpdate with correct values", async () => {

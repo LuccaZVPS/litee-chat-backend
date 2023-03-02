@@ -6,7 +6,7 @@ import { createDTO } from "../presentation/controllers/account/mocks/create-dto"
 import { faker } from "@faker-js/faker";
 import path from "path";
 import { randomSecret } from "./mocks/random-secret";
-import { emailVerifyModel } from "../../src/infra/db/models/email-verify-model-db";
+import { emailStatusModel } from "../../src/infra/db/models/email-staus-model-db";
 import session from "express-session";
 import express from "express";
 describe("Account routes", () => {
@@ -94,7 +94,7 @@ describe("Account routes", () => {
         })
         .expect(401);
     });
-    test("should return 200 if the account exist and if verified", async () => {
+    test("should return 200 if the account exist and if is verified", async () => {
       await request(app)
         .post("/api/account/signup")
         .send({
@@ -103,12 +103,6 @@ describe("Account routes", () => {
           password: "validPassword123",
         })
         .expect(204);
-
-      const acountToVerify = await accountModel.findOne({
-        email: "any2@gmail.com",
-      });
-      acountToVerify.verified = true;
-      acountToVerify.save();
       await request(app)
         .post("/api/account/login")
         .send({
@@ -155,7 +149,7 @@ describe("Account routes", () => {
       const accounToVerify = await accountModel.findOne({
         email: "lucca@gmail.com",
       });
-      const verifyData = await emailVerifyModel.findOne({
+      const verifyData = await emailStatusModel.findOne({
         accountId: accounToVerify._id,
       });
       await request(app)
