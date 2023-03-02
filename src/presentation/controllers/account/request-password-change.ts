@@ -1,5 +1,6 @@
 import { FindAccountByEmail } from "../../../domain/useCases/account/find-account-by-email";
-import { serverError } from "../../helpers/http-helper";
+import { InvalidBody } from "../../errors/invalid-body-error";
+import { badRequest, serverError } from "../../helpers/http-helper";
 import {
   Controller,
   HttpRequest,
@@ -21,7 +22,10 @@ export class RequestPasswordChangeController implements Controller {
           requestPasswordChange[prop] = httpRequest.body[prop];
         }
       }
-      const bodyErrors = await this.validator.validate(requestPasswordChange);
+      const isValid = await this.validator.validate(requestPasswordChange);
+      if (isValid.errors) {
+        return badRequest(new InvalidBody(isValid.errors));
+      }
       return;
     } catch {
       return serverError();
