@@ -24,6 +24,13 @@ export class EmailStatusRepository
     return;
   }
   async verify(_id: string): Promise<void> {
-    return;
+    await emailStatusModel.findOneAndUpdate(
+      { accountId: _id },
+      {
+        $set: {
+          verified: true,
+        },
+      }
+    );
   }
 }

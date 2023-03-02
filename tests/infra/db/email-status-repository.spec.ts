@@ -1,6 +1,6 @@
 import { mongoHelper } from "../../../src/infra/db/connection";
 import { emailStatusModel } from "../../../src/infra/db/models/email-staus-model-db";
-import { EmailVerifyRepository } from "../../../src/infra/db/repositories/email-status-repository";
+import { EmailStatusRepository } from "../../../src/infra/db/repositories/email-status-repository";
 
 describe("EmailVerify Repository", () => {
   beforeAll(async () => {
@@ -14,7 +14,7 @@ describe("EmailVerify Repository", () => {
   });
   const makeSut = () => {
     return {
-      sut: new EmailVerifyRepository(),
+      sut: new EmailStatusRepository(),
     };
   };
   describe("FindVerificationRepository", () => {
@@ -62,6 +62,29 @@ describe("EmailVerify Repository", () => {
       });
       const response = sut.create("any_id", "any_secret");
       expect(response).rejects.toThrow(new Error());
+    });
+  });
+  describe("EmailVerify", () => {
+    test("should call findOneAndUpdate with correct value", async () => {
+      const { sut } = makeSut();
+      const spy = jest.spyOn(emailStatusModel, "findOneAndUpdate");
+      await sut.verify("any_id");
+      expect(spy).toBeCalledWith(
+        { accountId: "any_id" },
+        {
+          $set: {
+            verified: true,
+          },
+        }
+      );
+    });
+    test("should verify an account", async () => {
+      const { sut } = makeSut();
+      await sut.create("any_id", "any_secret");
+      await sut.verify("any_id");
+      const response = await sut.find("any_id");
+      console.log(response);
+      expect(response["verified"]).toBe(true);
     });
   });
 });
