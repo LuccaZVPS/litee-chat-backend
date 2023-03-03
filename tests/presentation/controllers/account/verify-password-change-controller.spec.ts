@@ -1,7 +1,11 @@
 import { PasswordChangeRequest } from "../../../../src/domain/models/password-change-request";
 import { FindPasswordChangeRequest } from "../../../../src/domain/useCases/account/find-password-change";
 import { VerifyPasswordChangeController } from "../../../../src/presentation/controllers/account/verify-password-change-controller";
-import { serverError } from "../../../../src/presentation/helpers/http-helper";
+import { InvalidBody } from "../../../../src/presentation/errors/invalid-body-error";
+import {
+  badRequest,
+  serverError,
+} from "../../../../src/presentation/helpers/http-helper";
 import {
   errorType,
   Validator,
@@ -59,5 +63,17 @@ describe("Verify Password Change Controller", () => {
       body: { _id: "any_id", secret: "any_secret" },
     });
     expect(reponse).toEqual(serverError());
+  });
+  test("should return badRequest if validate return errors", async () => {
+    const { sut, validator } = makeSut();
+    jest.spyOn(validator, "validate").mockImplementationOnce(async () => {
+      return { errors: [{ errors: ["any"], field: "any" }] };
+    });
+    const reponse = await sut.handle({
+      body: { _id: "any_id", secret: "any_secret" },
+    });
+    expect(reponse).toEqual(
+      badRequest(new InvalidBody([{ errors: ["any"], field: "any" }]))
+    );
   });
 });
