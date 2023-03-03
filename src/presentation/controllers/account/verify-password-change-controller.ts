@@ -1,6 +1,6 @@
 import { FindPasswordChangeRequest } from "../../../domain/useCases/account/find-password-change";
 import { InvalidBody } from "../../errors/invalid-body-error";
-import { badRequest, serverError } from "../../helpers/http-helper";
+import { badRequest, notFound, serverError } from "../../helpers/http-helper";
 import {
   Controller,
   HttpRequest,
@@ -26,10 +26,13 @@ export class VerifyPasswordChangeController implements Controller {
       if (errors.length > 0) {
         return badRequest(new InvalidBody(errors));
       }
-      await this.findPasswordChange.find(
+      const requestChange = await this.findPasswordChange.find(
         verifyPasswordChangeDTO._id,
         verifyPasswordChangeDTO.secret
       );
+      if (!requestChange || !requestChange._id) {
+        return notFound("request not found");
+      }
     } catch {
       return serverError();
     }

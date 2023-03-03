@@ -4,6 +4,7 @@ import { VerifyPasswordChangeController } from "../../../../src/presentation/con
 import { InvalidBody } from "../../../../src/presentation/errors/invalid-body-error";
 import {
   badRequest,
+  notFound,
   serverError,
 } from "../../../../src/presentation/helpers/http-helper";
 import {
@@ -81,5 +82,17 @@ describe("Verify Password Change Controller", () => {
     const spy = jest.spyOn(findPasswordChangeRequest, "find");
     await sut.handle({ body: { _id: "any_id", secret: "any_secret" } });
     expect(spy).toHaveBeenCalledWith("any_id", "any_secret");
+  });
+  test("should return notFound if find method return void", async () => {
+    const { sut, findPasswordChangeRequest } = makeSut();
+    jest
+      .spyOn(findPasswordChangeRequest, "find")
+      .mockImplementationOnce(async () => {
+        return;
+      });
+    const reponse = await sut.handle({
+      body: { _id: "any_id", secret: "any_secret" },
+    });
+    expect(reponse).toEqual(notFound("request not found"));
   });
 });
