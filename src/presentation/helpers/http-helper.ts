@@ -43,6 +43,12 @@ export const notFound = (data: any) => {
     statusCode: 404,
   };
 };
+export const gone = (data: any) => {
+  return {
+    body: data,
+    statusCode: 410,
+  };
+};
 export const serverError = () => ({
   statusCode: 500,
   body: new ServerError(),

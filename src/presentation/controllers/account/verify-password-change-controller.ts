@@ -1,6 +1,11 @@
 import { FindPasswordChangeRequest } from "../../../domain/useCases/account/find-password-change";
 import { InvalidBody } from "../../errors/invalid-body-error";
-import { badRequest, notFound, serverError } from "../../helpers/http-helper";
+import {
+  badRequest,
+  gone,
+  notFound,
+  serverError,
+} from "../../helpers/http-helper";
 import {
   Controller,
   HttpRequest,
@@ -32,6 +37,9 @@ export class VerifyPasswordChangeController implements Controller {
       );
       if (!requestChange || !requestChange._id) {
         return notFound("request not found");
+      }
+      if (requestChange.expiresIn < Date.now()) {
+        return gone("expired request");
       }
     } catch {
       return serverError();

@@ -4,6 +4,7 @@ import { VerifyPasswordChangeController } from "../../../../src/presentation/con
 import { InvalidBody } from "../../../../src/presentation/errors/invalid-body-error";
 import {
   badRequest,
+  gone,
   notFound,
   serverError,
 } from "../../../../src/presentation/helpers/http-helper";
@@ -106,5 +107,22 @@ describe("Verify Password Change Controller", () => {
       body: { _id: "any_id", secret: "any_secret" },
     });
     expect(reponse).toEqual(serverError());
+  });
+  test("should return gone if find method returns expired changeRequest", async () => {
+    const { sut, findPasswordChangeRequest } = makeSut();
+    jest
+      .spyOn(findPasswordChangeRequest, "find")
+      .mockImplementationOnce(async () => {
+        return {
+          _id: "any_id",
+          accountId: "any_id",
+          secret: "any_secret",
+          expiresIn: Date.now() - 1000,
+        };
+      });
+    const reponse = await sut.handle({
+      body: { _id: "any_id", secret: "any_secret" },
+    });
+    expect(reponse).toEqual(gone("expired request"));
   });
 });
