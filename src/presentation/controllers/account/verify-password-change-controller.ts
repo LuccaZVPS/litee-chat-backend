@@ -12,7 +12,7 @@ import { VerifyPasswordChangeDTO } from "./DTOs/verifyPasswordChange-dto";
 export class VerifyPasswordChangeController implements Controller {
   constructor(
     private readonly validator: Validator,
-    findPasswordChange: FindPasswordChangeRequest
+    private readonly findPasswordChange: FindPasswordChangeRequest
   ) {}
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
@@ -26,9 +26,12 @@ export class VerifyPasswordChangeController implements Controller {
       if (errors.length > 0) {
         return badRequest(new InvalidBody(errors));
       }
+      await this.findPasswordChange.find(
+        verifyPasswordChangeDTO._id,
+        verifyPasswordChangeDTO.secret
+      );
     } catch {
       return serverError();
     }
-    return;
   }
 }

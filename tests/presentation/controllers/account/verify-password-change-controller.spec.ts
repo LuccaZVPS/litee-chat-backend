@@ -76,4 +76,10 @@ describe("Verify Password Change Controller", () => {
       badRequest(new InvalidBody([{ errors: ["any"], field: "any" }]))
     );
   });
+  test("should call find method with correct value", async () => {
+    const { sut, findPasswordChangeRequest } = makeSut();
+    const spy = jest.spyOn(findPasswordChangeRequest, "find");
+    await sut.handle({ body: { _id: "any_id", secret: "any_secret" } });
+    expect(spy).toHaveBeenCalledWith("any_id", "any_secret");
+  });
 });
