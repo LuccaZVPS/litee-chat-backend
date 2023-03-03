@@ -1,6 +1,7 @@
 import { PasswordChangeRequest } from "../../../../src/domain/models/password-change-request";
 import { FindPasswordChangeRequest } from "../../../../src/domain/useCases/account/find-password-change";
 import { VerifyPasswordChangeController } from "../../../../src/presentation/controllers/account/verify-password-change-controller";
+import { serverError } from "../../../../src/presentation/helpers/http-helper";
 import {
   errorType,
   Validator,
@@ -48,5 +49,15 @@ describe("Verify Password Change Controller", () => {
     const spy = jest.spyOn(validator, "validate");
     await sut.handle({ body: { _id: "any_id", secret: "any_secret" } });
     expect(spy).toHaveBeenCalledWith({ _id: "any_id", secret: "any_secret" });
+  });
+  test("should return serverError if validator throws", async () => {
+    const { sut, validator } = makeSut();
+    jest.spyOn(validator, "validate").mockImplementationOnce(async () => {
+      throw new Error();
+    });
+    const reponse = await sut.handle({
+      body: { _id: "any_id", secret: "any_secret" },
+    });
+    expect(reponse).toEqual(serverError());
   });
 });
