@@ -95,4 +95,16 @@ describe("Verify Password Change Controller", () => {
     });
     expect(reponse).toEqual(notFound("request not found"));
   });
+  test("should return serverError if find method throws", async () => {
+    const { sut, findPasswordChangeRequest } = makeSut();
+    jest
+      .spyOn(findPasswordChangeRequest, "find")
+      .mockImplementationOnce(async () => {
+        throw new Error();
+      });
+    const reponse = await sut.handle({
+      body: { _id: "any_id", secret: "any_secret" },
+    });
+    expect(reponse).toEqual(serverError());
+  });
 });
