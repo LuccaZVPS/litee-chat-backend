@@ -6,6 +6,7 @@ import {
   badRequest,
   gone,
   notFound,
+  ok,
   serverError,
 } from "../../../../src/presentation/helpers/http-helper";
 import {
@@ -24,10 +25,7 @@ describe("Verify Password Change Controller", () => {
   };
   const makeFindPasswordChangeRequest = () => {
     class FindPasswordChangeRequestStub implements FindPasswordChangeRequest {
-      async find(
-        id: string,
-        secret: string
-      ): Promise<void | PasswordChangeRequest> {
+      async find(): Promise<void | PasswordChangeRequest> {
         return {
           _id: "any_id",
           accountId: "any_id",
@@ -38,6 +36,7 @@ describe("Verify Password Change Controller", () => {
     }
     return new FindPasswordChangeRequestStub();
   };
+
   const makeSut = () => {
     const validator = makeValidatorStub();
     const findPasswordChangeRequest = makeFindPasswordChangeRequest();
@@ -124,5 +123,12 @@ describe("Verify Password Change Controller", () => {
       body: { _id: "any_id", secret: "any_secret" },
     });
     expect(reponse).toEqual(gone("expired request"));
+  });
+  test("should return ok if find method returns valid changeRequest", async () => {
+    const { sut } = makeSut();
+    const reponse = await sut.handle({
+      body: { _id: "any_id", secret: "any_secret" },
+    });
+    expect(reponse).toEqual(ok(""));
   });
 });

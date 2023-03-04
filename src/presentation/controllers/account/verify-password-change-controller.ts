@@ -4,6 +4,7 @@ import {
   badRequest,
   gone,
   notFound,
+  ok,
   serverError,
 } from "../../helpers/http-helper";
 import {
@@ -41,6 +42,7 @@ export class VerifyPasswordChangeController implements Controller {
       if (requestChange.expiresIn < Date.now()) {
         return gone("expired request");
       }
+      return ok("");
     } catch {
       return serverError();
     }
