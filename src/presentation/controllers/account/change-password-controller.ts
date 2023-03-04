@@ -1,7 +1,12 @@
 import { ChangePassword } from "../../../domain/useCases/account/change-password";
 import { FindPasswordChangeRequest } from "../../../domain/useCases/account/find-password-change";
 import { InvalidBody } from "../../errors/invalid-body-error";
-import { badRequest, notFound, serverError } from "../../helpers/http-helper";
+import {
+  badRequest,
+  gone,
+  notFound,
+  serverError,
+} from "../../helpers/http-helper";
 import {
   Controller,
   HttpRequest,
@@ -32,8 +37,11 @@ export class ChangePasswordController implements Controller {
         verifyPasswordChangeDTO._id,
         verifyPasswordChangeDTO.secret
       );
-      if (!requestChange || requestChange._id) {
+      if (!requestChange || !requestChange._id) {
         return notFound("change password request not found");
+      }
+      if (requestChange.expiresIn < Date.now()) {
+        return gone("request already expired");
       }
       return;
     } catch {

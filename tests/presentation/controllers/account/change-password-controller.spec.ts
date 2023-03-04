@@ -9,6 +9,7 @@ import {
 import { faker } from "@faker-js/faker";
 import {
   badRequest,
+  gone,
   notFound,
   serverError,
 } from "../../../../src/presentation/helpers/http-helper";
@@ -113,5 +114,20 @@ describe("ChangePasswordController", () => {
       });
     const response = await sut.handle({ body: { ...changePasswordDTO } });
     expect(response).toEqual(notFound("change password request not found"));
+  });
+  test("should return gone if request is expired", async () => {
+    const { sut, findPasswordChangeRequest } = makeSut();
+    jest
+      .spyOn(findPasswordChangeRequest, "find")
+      .mockImplementationOnce(async () => {
+        return {
+          _id: "any_id",
+          accountId: "any_id",
+          secret: "any_secret",
+          expiresIn: Date.now() - 7 * 24 * 60 * 60 * 1000,
+        };
+      });
+    const response = await sut.handle({ body: { ...changePasswordDTO } });
+    expect(response).toEqual(gone("request already expired"));
   });
 });
