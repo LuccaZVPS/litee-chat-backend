@@ -95,4 +95,12 @@ describe("ChangePasswordController", () => {
       changePasswordDTO.secret
     );
   });
+  test("should return serverError if find method throws", async () => {
+    const { sut, findPasswordChangeRequest } = makeSut();
+    jest.spyOn(findPasswordChangeRequest, "find").mockImplementationOnce(() => {
+      throw new Error();
+    });
+    const response = await sut.handle({ body: { ...changePasswordDTO } });
+    expect(response).toEqual(serverError());
+  });
 });
