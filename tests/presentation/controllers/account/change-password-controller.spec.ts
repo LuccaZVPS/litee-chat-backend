@@ -7,7 +7,11 @@ import {
   Validator,
 } from "../../../../src/presentation/protocols/validator";
 import { faker } from "@faker-js/faker";
-import { serverError } from "../../../../src/presentation/helpers/http-helper";
+import {
+  badRequest,
+  serverError,
+} from "../../../../src/presentation/helpers/http-helper";
+import { InvalidBody } from "../../../../src/presentation/errors/invalid-body-error";
 describe("ChangePasswordController", () => {
   const changePasswordDTO = {
     _id: faker.datatype.uuid(),
@@ -71,5 +75,15 @@ describe("ChangePasswordController", () => {
     });
     const response = await sut.handle({ body: { ...changePasswordDTO } });
     expect(response).toEqual(serverError());
+  });
+  test("should return badRequest if validator returns errors", async () => {
+    const { sut, validatorStub } = makeSut();
+    jest.spyOn(validatorStub, "validate").mockImplementationOnce(async () => {
+      return { errors: [{ errors: ["any"], field: "any" }] };
+    });
+    const response = await sut.handle({ body: { ...changePasswordDTO } });
+    expect(response).toEqual(
+      badRequest(new InvalidBody([{ errors: ["any"], field: "any" }]))
+    );
   });
 });
