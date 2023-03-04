@@ -28,6 +28,10 @@ export class ChangePasswordController implements Controller {
       if (errors.length > 0) {
         return badRequest(new InvalidBody(errors));
       }
+      await this.findRequest.find(
+        verifyPasswordChangeDTO._id,
+        verifyPasswordChangeDTO.secret
+      );
       return;
     } catch {
       return serverError();
