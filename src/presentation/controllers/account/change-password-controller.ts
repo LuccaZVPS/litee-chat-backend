@@ -1,5 +1,6 @@
 import { ChangePassword } from "../../../domain/useCases/account/change-password";
 import { FindPasswordChangeRequest } from "../../../domain/useCases/account/find-password-change";
+import { serverError } from "../../helpers/http-helper";
 import {
   Controller,
   HttpRequest,
@@ -15,13 +16,17 @@ export class ChangePasswordController implements Controller {
     private readonly changePassword: ChangePassword
   ) {}
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
-    const verifyPasswordChangeDTO = new ChangePasswordDTO();
-    for (const prop in verifyPasswordChangeDTO) {
-      if (httpRequest?.body[prop]) {
-        verifyPasswordChangeDTO[prop] = httpRequest.body[prop];
+    try {
+      const verifyPasswordChangeDTO = new ChangePasswordDTO();
+      for (const prop in verifyPasswordChangeDTO) {
+        if (httpRequest?.body[prop]) {
+          verifyPasswordChangeDTO[prop] = httpRequest.body[prop];
+        }
       }
+      const { errors } = await this.validator.validate(verifyPasswordChangeDTO);
+      return;
+    } catch {
+      return serverError();
     }
-    const { errors } = await this.validator.validate(verifyPasswordChangeDTO);
-    return;
   }
 }
