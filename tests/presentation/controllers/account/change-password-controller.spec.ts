@@ -9,6 +9,7 @@ import {
 import { faker } from "@faker-js/faker";
 import {
   badRequest,
+  notFound,
   serverError,
 } from "../../../../src/presentation/helpers/http-helper";
 import { InvalidBody } from "../../../../src/presentation/errors/invalid-body-error";
@@ -102,5 +103,15 @@ describe("ChangePasswordController", () => {
     });
     const response = await sut.handle({ body: { ...changePasswordDTO } });
     expect(response).toEqual(serverError());
+  });
+  test("should return notFound if find method returns void", async () => {
+    const { sut, findPasswordChangeRequest } = makeSut();
+    jest
+      .spyOn(findPasswordChangeRequest, "find")
+      .mockImplementationOnce(async () => {
+        return;
+      });
+    const response = await sut.handle({ body: { ...changePasswordDTO } });
+    expect(response).toEqual(notFound("change password request not found"));
   });
 });
