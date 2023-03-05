@@ -140,4 +140,12 @@ describe("ChangePasswordController", () => {
       "any_id"
     );
   });
+  test("should return serverError if change password throws", async () => {
+    const { sut, changePasswordStub } = makeSut();
+    jest.spyOn(changePasswordStub, "change").mockImplementationOnce(() => {
+      throw new Error();
+    });
+    const response = await sut.handle({ body: { ...changePasswordDTO } });
+    expect(response).toEqual(serverError());
+  });
 });
