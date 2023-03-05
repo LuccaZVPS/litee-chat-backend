@@ -11,6 +11,7 @@ import {
   badRequest,
   gone,
   notFound,
+  ok,
   serverError,
 } from "../../../../src/presentation/helpers/http-helper";
 import { InvalidBody } from "../../../../src/presentation/errors/invalid-body-error";
@@ -147,5 +148,10 @@ describe("ChangePasswordController", () => {
     });
     const response = await sut.handle({ body: { ...changePasswordDTO } });
     expect(response).toEqual(serverError());
+  });
+  test("should return ok status code", async () => {
+    const { sut } = makeSut();
+    const response = await sut.handle({ body: { ...changePasswordDTO } });
+    expect(response).toEqual(ok("password changed"));
   });
 });

@@ -5,6 +5,7 @@ import {
   badRequest,
   gone,
   notFound,
+  ok,
   serverError,
 } from "../../helpers/http-helper";
 import {
@@ -48,7 +49,7 @@ export class ChangePasswordController implements Controller {
         verifyPasswordChangeDTO.password,
         requestChange._id
       );
-      return;
+      return ok("password changed");
     } catch {
       return serverError();
     }
