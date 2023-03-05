@@ -130,4 +130,14 @@ describe("ChangePasswordController", () => {
     const response = await sut.handle({ body: { ...changePasswordDTO } });
     expect(response).toEqual(gone("request already expired"));
   });
+  test("should call change password with correct value", async () => {
+    const { sut, changePasswordStub } = makeSut();
+    const spy = jest.spyOn(changePasswordStub, "change");
+    await sut.handle({ body: { ...changePasswordDTO } });
+    expect(spy).toHaveBeenCalledWith(
+      changePasswordDTO._id,
+      changePasswordDTO.password,
+      "any_id"
+    );
+  });
 });

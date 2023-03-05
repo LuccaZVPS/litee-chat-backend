@@ -43,6 +43,11 @@ export class ChangePasswordController implements Controller {
       if (requestChange.expiresIn < Date.now()) {
         return gone("request already expired");
       }
+      await this.changePassword.change(
+        verifyPasswordChangeDTO._id,
+        verifyPasswordChangeDTO.password,
+        requestChange._id
+      );
       return;
     } catch {
       return serverError();
