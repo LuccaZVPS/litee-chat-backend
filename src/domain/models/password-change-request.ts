@@ -3,4 +3,5 @@ export interface PasswordChangeRequest {
   secret: string;
   accountId: string;
   expiresIn: number;
+  used: boolean;
 }

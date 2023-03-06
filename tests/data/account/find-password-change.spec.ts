@@ -18,6 +18,7 @@ describe("FindPasswordChange", () => {
           accountId: "any_id",
           secret: "any_secret",
           expiresIn: requestDate,
+          used: false,
         };
       }
     }
@@ -63,6 +64,19 @@ describe("FindPasswordChange", () => {
     );
     expect(response).toBe(undefined);
   });
+  test("should return void if request is already used", async () => {
+    const { sut, findPasswordChangeRepositoryStub } = makeSut();
+    jest
+      .spyOn(findPasswordChangeRepositoryStub, "find")
+      .mockImplementationOnce(async () => {
+        return;
+      });
+    const response = await sut.find(
+      changePasswordDTO._id,
+      changePasswordDTO.secret
+    );
+    expect(response).toBe(undefined);
+  });
   test("should return a request", async () => {
     const { sut } = makeSut();
     const response = await sut.find(
@@ -74,6 +88,7 @@ describe("FindPasswordChange", () => {
       accountId: "any_id",
       secret: "any_secret",
       expiresIn: requestDate,
+      used: false,
     });
   });
 });

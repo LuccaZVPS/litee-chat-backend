@@ -31,6 +31,7 @@ describe("Verify Password Change Controller", () => {
           accountId: "any_id",
           secret: "any_secret",
           expiresIn: Date.now() + 7 * 24 * 60 * 60 * 1000,
+          used: false,
         };
       }
     }
@@ -117,6 +118,7 @@ describe("Verify Password Change Controller", () => {
           accountId: "any_id",
           secret: "any_secret",
           expiresIn: Date.now() - 1000,
+          used: false,
         };
       });
     const reponse = await sut.handle({

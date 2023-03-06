@@ -37,6 +37,7 @@ describe("ChangePasswordController", () => {
           accountId: "any_id",
           secret: "any_secret",
           expiresIn: Date.now() + 7 * 24 * 60 * 60 * 1000,
+          used: false,
         };
       }
     }
@@ -126,6 +127,7 @@ describe("ChangePasswordController", () => {
           accountId: "any_id",
           secret: "any_secret",
           expiresIn: Date.now() - 7 * 24 * 60 * 60 * 1000,
+          used: false,
         };
       });
     const response = await sut.handle({ body: { ...changePasswordDTO } });

@@ -10,6 +10,10 @@ export class FindPasswordChange implements FindPasswordChangeRequestType {
     id: string,
     secret: string
   ): Promise<void | PasswordChangeRequest> {
-    return await this.findChangeRequest.find(id, secret);
+    const request = await this.findChangeRequest.find(id, secret);
+    if (!request || request?.used) {
+      return;
+    }
+    return request;
   }
 }
