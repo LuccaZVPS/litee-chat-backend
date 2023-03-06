@@ -49,4 +49,12 @@ describe("RequestPasswordChange", () => {
     await sut.createRequest("any_id");
     expect(spy).toHaveBeenCalled();
   });
+  test("should throws if generate method throws", () => {
+    const { sut, generatePasswordStub } = makeSut();
+    jest.spyOn(generatePasswordStub, "generate").mockImplementationOnce(() => {
+      throw new Error();
+    });
+    const response = sut.createRequest("any_id");
+    expect(response).rejects.toThrow(new Error());
+  });
 });
