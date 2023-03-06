@@ -7,19 +7,17 @@ describe("FindPasswordChange", () => {
     _id: faker.datatype.uuid(),
     secret: "any_secret",
   };
+  const requestDate = Date.now() + 7 * 24 * 60 * 60 * 1000;
   const makeFindPasswordChangeRepositoryStub = () => {
     class FindPasswordChangeRepositoryStub
       implements FindPasswordChangeRepository
     {
-      async find(
-        _id: string,
-        secret: string
-      ): Promise<void | PasswordChangeRequest> {
+      async find(): Promise<void | PasswordChangeRequest> {
         return {
           _id: "any_id",
           accountId: "any_id",
           secret: "any_secret",
-          expiresIn: Date.now() + 7 * 24 * 60 * 60 * 1000,
+          expiresIn: requestDate,
         };
       }
     }
@@ -64,5 +62,18 @@ describe("FindPasswordChange", () => {
       changePasswordDTO.secret
     );
     expect(response).toBe(undefined);
+  });
+  test("should return a request", async () => {
+    const { sut } = makeSut();
+    const response = await sut.find(
+      changePasswordDTO._id,
+      changePasswordDTO.secret
+    );
+    expect(response).toEqual({
+      _id: "any_id",
+      accountId: "any_id",
+      secret: "any_secret",
+      expiresIn: requestDate,
+    });
   });
 });
