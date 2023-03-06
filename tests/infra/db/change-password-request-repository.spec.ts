@@ -35,5 +35,14 @@ describe("ChangePasswordRequest Repository", () => {
         secret: "any_secret",
       });
     });
+    test("should return an request", async () => {
+      const { sut } = makeSut();
+      const requestToFind = await changePasswordRequestModel.create({
+        accountId: "any_id_to_find",
+        secret: "any",
+      });
+      const response = await sut.find("any_id_to_find", "any");
+      expect(response["accountId"]).toEqual(requestToFind.accountId);
+    });
   });
 });

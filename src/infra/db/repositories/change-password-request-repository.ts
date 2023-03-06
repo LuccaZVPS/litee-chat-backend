@@ -13,10 +13,9 @@ export class ChangePasswordRequestRepository
     _id: string,
     secret: string
   ): Promise<void | PasswordChangeRequest> {
-    await changePasswordRequestModel.findOne({
+    return await changePasswordRequestModel.findOne({
       accountId: _id,
       secret: secret,
     });
-    return;
   }
 }
