@@ -12,6 +12,7 @@ export class RequestPasswordChange implements RequestPasswordChangeType {
   async createRequest(accountId: string): Promise<void> {
     const secret = this.generateSecret.generate();
     await this.createChangeRequest.create(accountId, secret);
+    await this.sendChangeEmail.send(accountId, secret);
     return;
   }
 }

@@ -71,4 +71,10 @@ describe("RequestPasswordChange", () => {
     const response = sut.createRequest("any_id");
     expect(response).rejects.toThrow(new Error());
   });
+  test("should call sendChangeEmail with correct value", async () => {
+    const { sut, sendChangeEmailStub } = makeSut();
+    const spy = jest.spyOn(sendChangeEmailStub, "send");
+    await sut.createRequest("any_id");
+    expect(spy).toHaveBeenCalledWith("any_id", "any_secret");
+  });
 });
