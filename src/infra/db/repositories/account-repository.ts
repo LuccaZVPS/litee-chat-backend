@@ -5,11 +5,13 @@ import { AccountSession } from "../../../domain/useCases/account/create-account"
 import { CreateAccountDTO } from "../../../presentation/controllers/account/DTOs/create-account-dto";
 import { accountModel } from "../models/account-model-db";
 import { UpdateImageRepository } from "../../../data/protocols/account-repository/update-image-repository";
+import { changePasswordRepository } from "../../../data/protocols/account-repository/change-password-repository";
 export class AccountRepository
   implements
     CreateAccountRepository,
     FindAccountByEmailRepository,
-    UpdateImageRepository
+    UpdateImageRepository,
+    changePasswordRepository
 {
   async create(createAccountDTO: CreateAccountDTO): Promise<AccountSession> {
     const account = await accountModel.create({ ...createAccountDTO });
@@ -31,6 +33,15 @@ export class AccountRepository
   }
   async update(_id: string, path: string): Promise<void> {
     await accountModel.findOneAndUpdate({ _id }, { $set: { imageURL: path } });
-    return;
+  }
+  async change(accountId: string, hash: string): Promise<void> {
+    await accountModel.findOneAndUpdate(
+      { _id: accountId },
+      {
+        $set: {
+          password: hash,
+        },
+      }
+    );
   }
 }

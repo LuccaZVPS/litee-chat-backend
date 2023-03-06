@@ -3,6 +3,7 @@ import { mongoHelper } from "../../../src/infra/db/connection";
 import { accountModel } from "../../../src/infra/db/models/account-model-db";
 import { AccountRepository } from "../../../src/infra/db/repositories/account-repository";
 import { createDTO } from "../../presentation/controllers/account/mocks/create-dto";
+import { faker } from "@faker-js/faker";
 describe("Account Repository", () => {
   beforeAll(async () => {
     await mongoHelper.connect(process.env.MONGO_URL);
@@ -70,6 +71,26 @@ describe("Account Repository", () => {
       expect(spy).toHaveBeenCalledWith(
         { _id: "any_id" },
         { $set: { imageURL: "any_path" } }
+      );
+    });
+  });
+  describe("ChangePasswordRepository", () => {
+    test("should call findOneAndUpdate with correct values", async () => {
+      const { sut } = makeSut();
+      const spy = jest.spyOn(accountModel, "findOneAndUpdate");
+      const accountToUpdate = await accountModel.create({
+        email: faker.internet.email(),
+        name: faker.internet.userName(),
+        password: faker.internet.password,
+      });
+      await sut.change(accountToUpdate._id, "new_hash");
+      expect(spy).toHaveBeenCalledWith(
+        { _id: accountToUpdate._id },
+        {
+          $set: {
+            password: "new_hash",
+          },
+        }
       );
     });
   });
