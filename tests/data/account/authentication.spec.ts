@@ -1,9 +1,9 @@
-import { CompareHash } from "../../../src/data/protocols/account/compare-hash";
-import { FindAccountByEmailRepository } from "../../../src/data/protocols/account/find-account-by-email-repository";
+import { CompareHash } from "../../../src/data/protocols/commom/compare-hash";
+import { FindAccountByEmailRepository } from "../../../src/data/protocols/account-repository/find-account-by-email-repository";
 import { Authentication } from "../../../src/data/useCases/account/authentication";
 import { AccountModel } from "../../../src/domain/models/account";
 import { faker } from "@faker-js/faker";
-import { FindEmailStatusRepository } from "../../../src/data/protocols/account/find-email-status-repository";
+import { FindEmailStatusRepository } from "../../../src/data/protocols/emailStatus-repository/find-email-status-repository";
 import { EmailStatusModel } from "../../../src/domain/models/email-status";
 describe("Authentication", () => {
   const makeFindEmailStatusRepositoryStub = () => {

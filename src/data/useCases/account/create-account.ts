@@ -3,11 +3,11 @@ import {
   AccountSession,
   CreateAccount as CreateAccountType,
 } from "../../../domain/useCases/account/create-account";
-import { CreateAccountRepository } from "../../protocols/account/create-account-repository";
-import { Hasher } from "../../protocols/account/hasher";
-import { GeneratePassword } from "../../protocols/account/generate-password";
-import { CreateVerificationRepository } from "../../protocols/account/create-verification-repository";
-import { SendVerificationEmail } from "../../protocols/account/send-verification-emai";
+import { CreateAccountRepository } from "../../protocols/account-repository/create-account-repository";
+import { Hasher } from "../../protocols/commom/hasher";
+import { GeneratePassword } from "../../protocols/commom/generate-password";
+import { CreateVerificationRepository } from "../../protocols/emailStatus-repository/create-verification-repository";
+import { SendVerificationEmail } from "../../protocols/account-repository/send-verification-emai";
 
 export class CreateAccount implements CreateAccountType {
   constructor(

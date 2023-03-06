@@ -1,6 +1,6 @@
 import { PasswordChangeRequest } from "../../../domain/models/password-change-request";
 import { FindPasswordChangeRequest as FindPasswordChangeRequestType } from "../../../domain/useCases/account/find-password-change";
-import { FindPasswordChangeRepository } from "../../protocols/account/find-password-change-repository";
+import { FindPasswordChangeRepository } from "../../protocols/passwordChangeRequest-repository/find-password-change-repository";
 
 export class FindPasswordChange implements FindPasswordChangeRequestType {
   constructor(

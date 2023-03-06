@@ -1,5 +1,5 @@
 import generator from "generate-password";
-import { GeneratePassword } from "../../data/protocols/account/generate-password";
+import { GeneratePassword } from "../../data/protocols/commom/generate-password";
 
 export class GeneratePasswordAdapter implements GeneratePassword {
   generate(): string {

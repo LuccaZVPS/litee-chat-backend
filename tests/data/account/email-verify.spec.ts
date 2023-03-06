@@ -1,5 +1,5 @@
-import { EmailVerifyRepository } from "../../../src/data/protocols/account/email-verify-repository";
-import { FindEmailStatusRepository } from "../../../src/data/protocols/account/find-email-status-repository";
+import { EmailVerifyRepository } from "../../../src/data/protocols/emailStatus-repository/email-verify-repository";
+import { FindEmailStatusRepository } from "../../../src/data/protocols/emailStatus-repository/find-email-status-repository";
 import { EmailVerify } from "../../../src/data/useCases/account/email-verify";
 import { EmailStatusModel } from "../../../src/domain/models/email-status";
 

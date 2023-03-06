@@ -1,8 +1,8 @@
-import { CreateAccountRepository } from "../../../src/data/protocols/account/create-account-repository";
-import { CreateVerificationRepository } from "../../../src/data/protocols/account/create-verification-repository";
-import { GeneratePassword } from "../../../src/data/protocols/account/generate-password";
-import { Hasher } from "../../../src/data/protocols/account/hasher";
-import { SendVerificationEmail } from "../../../src/data/protocols/account/send-verification-emai";
+import { CreateAccountRepository } from "../../../src/data/protocols/account-repository/create-account-repository";
+import { CreateVerificationRepository } from "../../../src/data/protocols/emailStatus-repository/create-verification-repository";
+import { GeneratePassword } from "../../../src/data/protocols/commom/generate-password";
+import { Hasher } from "../../../src/data/protocols/commom/hasher";
+import { SendVerificationEmail } from "../../../src/data/protocols/account-repository/send-verification-emai";
 import { CreateAccount } from "../../../src/data/useCases/account/create-account";
 import { AccountSession } from "../../../src/domain/useCases/account/create-account";
 import { createDTO } from "../../presentation/controllers/account/mocks/create-dto";

@@ -1,6 +1,6 @@
 import { EmailVerify as EmailVerifyType } from "../../../domain/useCases/account/email-verify";
-import { EmailVerifyRepository } from "../../protocols/account/email-verify-repository";
-import { FindEmailStatusRepository } from "../../protocols/account/find-email-status-repository";
+import { EmailVerifyRepository } from "../../protocols/emailStatus-repository/email-verify-repository";
+import { FindEmailStatusRepository } from "../../protocols/emailStatus-repository/find-email-status-repository";
 
 export class EmailVerify implements EmailVerifyType {
   constructor(

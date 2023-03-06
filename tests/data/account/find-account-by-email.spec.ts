@@ -1,4 +1,4 @@
-import { FindAccountByEmailRepository } from "../../../src/data/protocols/account/find-account-by-email-repository";
+import { FindAccountByEmailRepository } from "../../../src/data/protocols/account-repository/find-account-by-email-repository";
 import { FindAccountByEmail } from "../../../src/data/useCases/account/find-account-by-email";
 import { AccountModel } from "../../../src/domain/models/account";
 import { anyAccount } from "../../presentation/controllers/account/mocks/fake-account";

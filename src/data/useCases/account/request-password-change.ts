@@ -1,7 +1,7 @@
 import { RequestPasswordChange as RequestPasswordChangeType } from "../../../domain/useCases/account/request-password-change";
-import { CreateChangeRequestRepository } from "../../protocols/account/create-change-request-repository";
-import { GeneratePassword } from "../../protocols/account/generate-password";
-import { SendChangePasswordEmail } from "../../protocols/account/send-change-password-email";
+import { CreateChangeRequestRepository } from "../../protocols/passwordChangeRequest-repository/create-change-request-repository";
+import { GeneratePassword } from "../../protocols/commom/generate-password";
+import { SendChangePasswordEmail } from "../../protocols/account-repository/send-change-password-email";
 
 export class RequestPasswordChange implements RequestPasswordChangeType {
   constructor(

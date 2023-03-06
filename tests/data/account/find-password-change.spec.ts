@@ -1,4 +1,4 @@
-import { FindPasswordChangeRepository } from "../../../src/data/protocols/account/find-password-change-repository";
+import { FindPasswordChangeRepository } from "../../../src/data/protocols/passwordChangeRequest-repository/find-password-change-repository";
 import { FindPasswordChange } from "../../../src/data/useCases/account/find-password-change";
 import { PasswordChangeRequest } from "../../../src/domain/models/password-change-request";
 import { faker } from "@faker-js/faker";

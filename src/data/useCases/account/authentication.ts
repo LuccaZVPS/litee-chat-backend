@@ -1,8 +1,8 @@
 import { Authentication as AuthenticationType } from "../../../domain/useCases/account/authentication";
 import { AccountSession } from "../../../domain/useCases/account/create-account";
-import { CompareHash } from "../../protocols/account/compare-hash";
-import { FindAccountByEmailRepository } from "../../protocols/account/find-account-by-email-repository";
-import { FindEmailStatusRepository } from "../../protocols/account/find-email-status-repository";
+import { CompareHash } from "../../protocols/commom/compare-hash";
+import { FindAccountByEmailRepository } from "../../protocols/account-repository/find-account-by-email-repository";
+import { FindEmailStatusRepository } from "../../protocols/emailStatus-repository/find-email-status-repository";
 
 export class Authentication implements AuthenticationType {
   constructor(

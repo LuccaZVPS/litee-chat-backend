@@ -1,4 +1,4 @@
-import { UpdateImageRepository } from "../../../src/data/protocols/account/update-image-repository";
+import { UpdateImageRepository } from "../../../src/data/protocols/account-repository/update-image-repository";
 import { UpdateImage } from "../../../src/data/useCases/account/update-image";
 
 describe("UpdateImage", () => {

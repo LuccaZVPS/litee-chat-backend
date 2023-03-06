@@ -1,6 +1,6 @@
-import { CreateChangeRequestRepository } from "../../../src/data/protocols/account/create-change-request-repository";
-import { GeneratePassword } from "../../../src/data/protocols/account/generate-password";
-import { SendChangePasswordEmail } from "../../../src/data/protocols/account/send-change-password-email";
+import { CreateChangeRequestRepository } from "../../../src/data/protocols/passwordChangeRequest-repository/create-change-request-repository";
+import { GeneratePassword } from "../../../src/data/protocols/commom/generate-password";
+import { SendChangePasswordEmail } from "../../../src/data/protocols/account-repository/send-change-password-email";
 import { RequestPasswordChange } from "../../../src/data/useCases/account/request-password-change";
 
 describe("RequestPasswordChange", () => {

@@ -1,6 +1,6 @@
-import { CreateVerificationRepository } from "../../../data/protocols/account/create-verification-repository";
-import { EmailVerifyRepository } from "../../../data/protocols/account/email-verify-repository";
-import { FindEmailStatusRepository } from "../../../data/protocols/account/find-email-status-repository";
+import { CreateVerificationRepository } from "../../../data/protocols/emailStatus-repository/create-verification-repository";
+import { EmailVerifyRepository } from "../../../data/protocols/emailStatus-repository/email-verify-repository";
+import { FindEmailStatusRepository } from "../../../data/protocols/emailStatus-repository/find-email-status-repository";
 import { EmailStatusModel } from "../../../domain/models/email-status";
 import { emailStatusModel } from "../models/email-staus-model-db";
 

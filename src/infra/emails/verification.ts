@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import { SendVerificationEmail } from "../../data/protocols/account/send-verification-emai";
+import { SendVerificationEmail } from "../../data/protocols/account-repository/send-verification-emai";
 import { makeVerificationTemplate } from "./templates/verification-template";
 // async..await is not allowed in global scope, must use a wrapper
 export class SendEmail implements SendVerificationEmail {

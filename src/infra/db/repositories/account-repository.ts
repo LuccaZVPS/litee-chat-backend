@@ -1,10 +1,10 @@
-import { CreateAccountRepository } from "../../../data/protocols/account/create-account-repository";
-import { FindAccountByEmailRepository } from "../../../data/protocols/account/find-account-by-email-repository";
+import { CreateAccountRepository } from "../../../data/protocols/account-repository/create-account-repository";
+import { FindAccountByEmailRepository } from "../../../data/protocols/account-repository/find-account-by-email-repository";
 import { AccountModel } from "../../../domain/models/account";
 import { AccountSession } from "../../../domain/useCases/account/create-account";
 import { CreateAccountDTO } from "../../../presentation/controllers/account/DTOs/create-account-dto";
 import { accountModel } from "../models/account-model-db";
-import { UpdateImageRepository } from "../../../data/protocols/account/update-image-repository";
+import { UpdateImageRepository } from "../../../data/protocols/account-repository/update-image-repository";
 export class AccountRepository
   implements
     CreateAccountRepository,
