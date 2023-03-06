@@ -93,5 +93,19 @@ describe("Account Repository", () => {
         }
       );
     });
+    test("should update the account password", async () => {
+      const { sut } = makeSut();
+      jest.spyOn(accountModel, "findOneAndUpdate");
+      const accountToUpdate = await accountModel.create({
+        email: faker.internet.email(),
+        name: faker.internet.userName(),
+        password: faker.internet.password,
+      });
+      await sut.change(accountToUpdate._id, "new_hash");
+      const accountToFind = await accountModel.findOne({
+        _id: accountToUpdate._id,
+      });
+      expect(accountToFind.password).toBe("new_hash");
+    });
   });
 });
