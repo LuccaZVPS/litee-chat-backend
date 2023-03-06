@@ -42,4 +42,14 @@ describe("FindPasswordChange", () => {
       changePasswordDTO.secret
     );
   });
+  test("should throws if find method throws", async () => {
+    const { sut, findPasswordChangeRepositoryStub } = makeSut();
+    jest
+      .spyOn(findPasswordChangeRepositoryStub, "find")
+      .mockImplementationOnce(() => {
+        throw new Error();
+      });
+    const response = sut.find(changePasswordDTO._id, changePasswordDTO.secret);
+    expect(response).rejects.toThrow(new Error());
+  });
 });
