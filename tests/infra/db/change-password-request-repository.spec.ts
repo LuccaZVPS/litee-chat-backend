@@ -25,4 +25,15 @@ describe("ChangePasswordRequest Repository", () => {
       });
     });
   });
+  describe("FindChangeRequestRepository", () => {
+    test("should call findOne with correct value", async () => {
+      const { sut } = makeSut();
+      const spy = jest.spyOn(changePasswordRequestModel, "findOne");
+      await sut.find("any_id", "any_secret");
+      expect(spy).toHaveBeenCalledWith({
+        accountId: "any_id",
+        secret: "any_secret",
+      });
+    });
+  });
 });
