@@ -52,4 +52,17 @@ describe("FindPasswordChange", () => {
     const response = sut.find(changePasswordDTO._id, changePasswordDTO.secret);
     expect(response).rejects.toThrow(new Error());
   });
+  test("should return void if find method returns void", async () => {
+    const { sut, findPasswordChangeRepositoryStub } = makeSut();
+    jest
+      .spyOn(findPasswordChangeRepositoryStub, "find")
+      .mockImplementationOnce(async () => {
+        return;
+      });
+    const response = await sut.find(
+      changePasswordDTO._id,
+      changePasswordDTO.secret
+    );
+    expect(response).toBe(undefined);
+  });
 });
