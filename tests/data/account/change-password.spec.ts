@@ -62,4 +62,10 @@ describe("ChangePassword", () => {
     const response = sut.change(DTO.accountId, DTO.password, DTO.requestId);
     expect(response).rejects.toThrow(new Error());
   });
+  test("should call change method with correct value", async () => {
+    const { sut, changePasswordRepositoryStub } = makeSut();
+    const spy = jest.spyOn(changePasswordRepositoryStub, "change");
+    await sut.change(DTO.accountId, DTO.password, DTO.requestId);
+    expect(spy).toHaveBeenCalledWith(DTO.accountId, "any_hash");
+  });
 });

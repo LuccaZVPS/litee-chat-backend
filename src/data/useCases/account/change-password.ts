@@ -14,7 +14,8 @@ export class ChangePassword implements ChangePasswordType {
     newPassword: string,
     requestId: string
   ): Promise<void> {
-    await this.hasher.hash(newPassword);
+    const hash = this.hasher.hash(newPassword);
+    await this.changePasswordRepository.change(accountId, hash);
     return;
   }
 }
