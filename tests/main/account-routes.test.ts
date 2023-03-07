@@ -9,6 +9,7 @@ import { randomSecret } from "./mocks/random-secret";
 import { emailStatusModel } from "../../src/infra/db/models/email-staus-model-db";
 import session from "express-session";
 import express from "express";
+import { changePasswordRequestModel } from "../../src/infra/db/models/change-password-request";
 describe("Account routes", () => {
   const mockApp = express();
   mockApp.use(
@@ -190,6 +191,53 @@ describe("Account routes", () => {
         .post("/api/account/change-password")
         .send({ email: account.email })
         .expect(200);
+    });
+  });
+  describe("change-password(put)", () => {
+    const email = faker.internet.email();
+    beforeAll(async () => {
+      await changePasswordRequestModel.deleteMany();
+      await accountModel.create({
+        email,
+        name: faker.internet.userName(),
+        password: "AnyPassword123",
+      });
+      await request(app)
+        .post("/api/account/change-password")
+        .send({ email })
+        .expect(200);
+    });
+    test("should return 400 if invalid params is provided", async () => {
+      await request(app)
+        .put("/api/account/change-password/any_id/any_secret")
+        .expect(400);
+    });
+    test("should return 400 if invalid password is provided", async () => {
+      const changeRequest = await changePasswordRequestModel.find();
+      await request(app)
+        .put(
+          `/api/account/change-password/${changeRequest[0].accountId}/${changeRequest[0].secret}`
+        )
+        .send({ password: "invalid" })
+        .expect(400);
+    });
+    test("should return 200 if valid request and password", async () => {
+      const changeRequest = await changePasswordRequestModel.find();
+      await request(app)
+        .put(
+          `/api/account/change-password/${changeRequest[0].accountId}/${changeRequest[0].secret}`
+        )
+        .send({ password: "AnyPassword123" })
+        .expect(200);
+    });
+    test("should return 404 if request are used", async () => {
+      const changeRequest = await changePasswordRequestModel.find();
+      await request(app)
+        .put(
+          `/api/account/change-password/${changeRequest[0].accountId}/${changeRequest[0].secret}`
+        )
+        .send({ password: "AnyPassword123" })
+        .expect(404);
     });
   });
 });
