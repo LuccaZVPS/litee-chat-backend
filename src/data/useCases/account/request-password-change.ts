@@ -9,10 +9,10 @@ export class RequestPasswordChange implements RequestPasswordChangeType {
     private readonly createChangeRequest: CreateChangeRequestRepository,
     private readonly sendChangeEmail: SendChangePasswordEmail
   ) {}
-  async createRequest(accountId: string): Promise<void> {
+  async createRequest(accountId: string, email: string): Promise<void> {
     const secret = this.generateSecret.generate();
     await this.createChangeRequest.create(accountId, secret);
-    await this.sendChangeEmail.send(accountId, secret);
+    await this.sendChangeEmail.sendChange(accountId, secret, email);
     return;
   }
 }

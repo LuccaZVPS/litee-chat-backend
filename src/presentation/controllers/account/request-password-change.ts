@@ -39,7 +39,7 @@ export class RequestPasswordChangeController implements Controller {
       if (!account || !account._id) {
         return notFound("email cant be found");
       }
-      await this.RequestChange.createRequest(account._id);
+      await this.RequestChange.createRequest(account._id, account.email);
       return ok("sucess");
     } catch {
       return serverError();

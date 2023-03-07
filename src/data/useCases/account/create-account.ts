@@ -31,7 +31,7 @@ export class CreateAccount implements CreateAccountType {
       accountData._id,
       generatedPassword
     );
-    this.sendVerificationEmail.send(
+    this.sendVerificationEmail.sendVerification(
       accountData.name,
       accountData.email,
       accountData._id,

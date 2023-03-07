@@ -22,7 +22,7 @@ describe("RequestPasswordChange", () => {
   };
   const makeSendChangePasswordEmailStub = () => {
     class SendChangePasswordEmailStub implements SendChangePasswordEmail {
-      async send(accountId: string, secret: string): Promise<void> {
+      async sendChange(accountId: string, secret: string): Promise<void> {
         return;
       }
     }
@@ -46,7 +46,7 @@ describe("RequestPasswordChange", () => {
   test("should call generate method with correct value", async () => {
     const { sut, generatePasswordStub } = makeSut();
     const spy = jest.spyOn(generatePasswordStub, "generate");
-    await sut.createRequest("any_id");
+    await sut.createRequest("any_id", "any@gmail.com");
     expect(spy).toHaveBeenCalled();
   });
   test("should throws if generate method throws", () => {
@@ -54,13 +54,13 @@ describe("RequestPasswordChange", () => {
     jest.spyOn(generatePasswordStub, "generate").mockImplementationOnce(() => {
       throw new Error();
     });
-    const response = sut.createRequest("any_id");
+    const response = sut.createRequest("any_id", "any@gmail.com");
     expect(response).rejects.toThrow(new Error());
   });
   test("should call createChangeRequest with correct value", async () => {
     const { sut, createChangeRequestStub } = makeSut();
     const spy = jest.spyOn(createChangeRequestStub, "create");
-    await sut.createRequest("any_id");
+    await sut.createRequest("any_id", "any@gmail.com");
     expect(spy).toHaveBeenCalledWith("any_id", "any_secret");
   });
   test("should throws if createChangeRequest throws", () => {
@@ -68,21 +68,21 @@ describe("RequestPasswordChange", () => {
     jest.spyOn(createChangeRequestStub, "create").mockImplementationOnce(() => {
       throw new Error();
     });
-    const response = sut.createRequest("any_id");
+    const response = sut.createRequest("any_id", "any@gmail.com");
     expect(response).rejects.toThrow(new Error());
   });
   test("should call sendChangeEmail with correct value", async () => {
     const { sut, sendChangeEmailStub } = makeSut();
-    const spy = jest.spyOn(sendChangeEmailStub, "send");
-    await sut.createRequest("any_id");
-    expect(spy).toHaveBeenCalledWith("any_id", "any_secret");
+    const spy = jest.spyOn(sendChangeEmailStub, "sendChange");
+    await sut.createRequest("any_id", "any@gmail.com");
+    expect(spy).toHaveBeenCalledWith("any_id", "any_secret", "any@gmail.com");
   });
   test("should throws if sendChangeEmail method throws", () => {
     const { sut, sendChangeEmailStub } = makeSut();
-    jest.spyOn(sendChangeEmailStub, "send").mockImplementationOnce(() => {
+    jest.spyOn(sendChangeEmailStub, "sendChange").mockImplementationOnce(() => {
       throw new Error();
     });
-    const response = sut.createRequest("any_id");
+    const response = sut.createRequest("any_id", "any@gmail.com");
     expect(response).rejects.toThrow(new Error());
   });
 });

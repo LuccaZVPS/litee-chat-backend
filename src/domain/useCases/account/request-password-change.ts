@@ -1,3 +1,3 @@
 export interface RequestPasswordChange {
-  createRequest(accountId: string): Promise<void>;
+  createRequest(accountId: string, email: string): Promise<void>;
 }

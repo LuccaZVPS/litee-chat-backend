@@ -17,10 +17,12 @@ import { RequestPasswordChange } from "../../../../src/domain/useCases/account/r
 import { anyAccount } from "./mocks/fake-account";
 describe("Request password change controller", () => {
   const accountMock = anyAccount;
+  const anyEmail = faker.internet.email();
+
   const makeFindAccountByEmail = () => {
     class FindByEmailStub implements FindAccountByEmail {
       async findByEmail(): Promise<AccountModel | void> {
-        return accountMock;
+        return { ...accountMock, email: anyEmail };
       }
     }
     return new FindByEmailStub();
@@ -35,7 +37,7 @@ describe("Request password change controller", () => {
   };
   const makeRequestPasswordChangeStub = () => {
     class RequestPasswordChangeStub implements RequestPasswordChange {
-      async createRequest(accountId: string): Promise<void> {
+      async createRequest(): Promise<void> {
         return;
       }
     }
@@ -56,7 +58,6 @@ describe("Request password change controller", () => {
       ),
     };
   };
-  const anyEmail = faker.internet.email();
   test("should call validator with correct values", async () => {
     const { sut, validatorStub } = makeSut();
     const spy = jest.spyOn(validatorStub, "validate");
@@ -109,7 +110,7 @@ describe("Request password change controller", () => {
     const { sut, requestPasswordChangeStub } = makeSut();
     const spy = jest.spyOn(requestPasswordChangeStub, "createRequest");
     await sut.handle({ body: { email: anyEmail } });
-    expect(spy).toHaveBeenCalledWith(accountMock._id);
+    expect(spy).toHaveBeenCalledWith(accountMock._id, anyEmail);
   });
   test("should return serverError if createRequest throws", async () => {
     const { sut, requestPasswordChangeStub } = makeSut();

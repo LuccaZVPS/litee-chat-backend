@@ -27,7 +27,7 @@ describe("Create Account", () => {
   };
   const makeSendVerificationEmail = () => {
     class SendVerificationEmailStub implements SendVerificationEmail {
-      async send(): Promise<void> {
+      async sendVerification(): Promise<void> {
         return;
       }
     }
@@ -170,7 +170,7 @@ describe("Create Account", () => {
   });
   test("should call sendVerificationEmail with correct value", async () => {
     const { sut, sendVerificationEmailStub } = makeSut();
-    const spy = jest.spyOn(sendVerificationEmailStub, "send");
+    const spy = jest.spyOn(sendVerificationEmailStub, "sendVerification");
     const dto = { ...createDTO };
     await sut.create(dto);
     expect(spy).toHaveBeenCalledWith(
@@ -182,9 +182,11 @@ describe("Create Account", () => {
   });
   test("should throws if sendVerificationEmail throws", () => {
     const { sut, sendVerificationEmailStub } = makeSut();
-    jest.spyOn(sendVerificationEmailStub, "send").mockImplementationOnce(() => {
-      throw new Error();
-    });
+    jest
+      .spyOn(sendVerificationEmailStub, "sendVerification")
+      .mockImplementationOnce(() => {
+        throw new Error();
+      });
     const dto = { ...createDTO };
     const response = sut.create(dto);
     expect(response).rejects.toThrow(new Error());

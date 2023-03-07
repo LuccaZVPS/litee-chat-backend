@@ -1,5 +1,5 @@
 export interface SendVerificationEmail {
-  send(
+  sendVerification(
     name: string,
     email: string,
     _id: string,
