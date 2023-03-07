@@ -3,6 +3,8 @@ import { SendChangePasswordEmail } from "../../data/protocols/account-repository
 import { SendVerificationEmail } from "../../data/protocols/account-repository/send-verification-emai";
 import { makeChangePasswordTemplate } from "./templates/change-password-template";
 import { makeVerificationTemplate } from "./templates/verification-template";
+import dotenv from "dotenv";
+dotenv.config();
 export class SendEmail
   implements SendVerificationEmail, SendChangePasswordEmail
 {

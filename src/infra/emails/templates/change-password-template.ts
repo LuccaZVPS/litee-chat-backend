@@ -140,7 +140,7 @@ export const makeChangePasswordTemplate = (
           <!-- start copy -->
           <tr>
             <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
-              <p style="margin: 0;">Tap the button below to change you password. if you have not requested a password change on <a href="${domain}">Litee Chat</a>, you can safely delete this email.</p>
+              <p style="margin: 0;">Tap the button below to change your password. if you have not requested a password change on <a href="${domain}">Litee Chat</a>, you can safely delete this email.</p>
             </td>
           </tr>
           <!-- end copy -->
