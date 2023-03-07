@@ -1,16 +1,16 @@
-export const makeVerificationTemplate = (
+export const makeChangePasswordTemplate = (
   _id: string,
   secret: string,
   domain: string
 ) => {
-  return ` 
+  return `
     <!DOCTYPE html>
 <html>
 <head>
 
   <meta charset="utf-8">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>Email Confirmation</title>
+  <title>Password change</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style type="text/css">
   /**
@@ -114,7 +114,7 @@ export const makeVerificationTemplate = (
         <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
           <tr>
             <td align="left" bgcolor="#ffffff" style="padding: 36px 24px 0; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; border-top: 3px solid #d4dadf;">
-              <h1 style="margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -1px; line-height: 48px;">Confirm Your Email Address</h1>
+              <h1 style="margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -1px; line-height: 48px;">Change your password</h1>
             </td>
           </tr>
         </table>
@@ -140,7 +140,7 @@ export const makeVerificationTemplate = (
           <!-- start copy -->
           <tr>
             <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
-              <p style="margin: 0;">Tap the button below to confirm your email address. If you didn't create an account with <a href="${domain}">Litee Chat</a>, you can safely delete this email.</p>
+              <p style="margin: 0;">Tap the button below to change you password. if you have not requested a password change on <a href="${domain}">Litee Chat</a>, you can safely delete this email.</p>
             </td>
           </tr>
           <!-- end copy -->
@@ -154,7 +154,7 @@ export const makeVerificationTemplate = (
                     <table border="0" cellpadding="0" cellspacing="0">
                       <tr>
                         <td align="center" bgcolor="#1a82e2" style="border-radius: 6px;">
-                          <a href="${domain}/verify/${_id}/${secret}" target="_blank" style="display: inline-block; padding: 16px 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;">Verify email</a>
+                          <a href="${domain}/verify/${_id}/${secret}" target="_blank" style="display: inline-block; padding: 16px 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;">Change password</a>
                         </td>
                       </tr>
                     </table>
