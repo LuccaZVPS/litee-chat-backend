@@ -18,7 +18,7 @@ router.put(
   adaptMiddeware(makeAuthMiddleware()),
   adptRoute(makeUpdateImageController())
 );
-router.put("/verify/:_id/:password", adptRoute(makeEmailVerifyController()));
+router.put("/verify/:_id/:secret", adptRoute(makeEmailVerifyController()));
 router.post(
   "/change-password",
   adptRoute(makeRequestPasswordChangeController())

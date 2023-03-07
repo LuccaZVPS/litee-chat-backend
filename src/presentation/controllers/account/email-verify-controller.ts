@@ -32,7 +32,7 @@ export class EmailVerifyController implements Controller {
       }
       const verified = await this.emailVerify.verify(
         verifyEmailDTO._id,
-        verifyEmailDTO.password
+        verifyEmailDTO.secret
       );
       if (!verified) {
         return forbidden("");

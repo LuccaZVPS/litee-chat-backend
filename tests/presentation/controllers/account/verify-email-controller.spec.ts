@@ -40,7 +40,7 @@ describe("Verify email controller", () => {
   };
   const verifyEmailDTO = {
     _id: "any_id",
-    password: "any_password",
+    secret: "any_secret",
   };
   test("should call validator with correct values", async () => {
     const { sut, validatorStub } = makeSut();
@@ -70,7 +70,7 @@ describe("Verify email controller", () => {
     const { sut, emailVerifyStub } = makeSut();
     const spy = jest.spyOn(emailVerifyStub, "verify");
     await sut.handle({ body: { ...verifyEmailDTO } });
-    expect(spy).toBeCalledWith(verifyEmailDTO._id, verifyEmailDTO.password);
+    expect(spy).toBeCalledWith(verifyEmailDTO._id, verifyEmailDTO.secret);
   });
   test("should return forbidden if verify method returns false", async () => {
     const { sut, emailVerifyStub } = makeSut();
