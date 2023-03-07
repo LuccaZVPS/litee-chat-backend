@@ -49,7 +49,7 @@ describe("Account routes", () => {
         .send({ ...validCreateDTO, name: "name_bigger_than_12_characters" })
         .expect(400);
     });
-    test("should return 409 if email is already in usea", async () => {
+    test("should return 409 if email is already in use", async () => {
       await request(app)
         .post("/api/account/signup")
         .send({ ...validCreateDTO, password: "validPassword12" })
@@ -164,6 +164,31 @@ describe("Account routes", () => {
         .put(
           "/api/account/verify/" + accounToVerify._id + "/" + verifyData.secret
         )
+        .expect(200);
+    });
+  });
+  describe("change-password(post)", () => {
+    test("should return 400 if invalid email is provided", async () => {
+      await request(app)
+        .post("/api/account/change-password")
+        .send({ email: "invalid_email.com" })
+        .expect(400);
+    });
+    test("should return 404 if email cant be found", async () => {
+      await request(app)
+        .post("/api/account/change-password")
+        .send({ email: "invalid@gmail.com" })
+        .expect(404);
+    });
+    test("should return 200 if valid email is provided", async () => {
+      const account = await accountModel.create({
+        email: faker.internet.email(),
+        name: faker.internet.userName(),
+        password: "AnyPassword123",
+      });
+      await request(app)
+        .post("/api/account/change-password")
+        .send({ email: account.email })
         .expect(200);
     });
   });
