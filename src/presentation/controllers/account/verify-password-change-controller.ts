@@ -42,7 +42,7 @@ export class VerifyPasswordChangeController implements Controller {
       if (requestChange.expiresIn < Date.now()) {
         return gone("expired request");
       }
-      return ok("");
+      return ok("valid link");
     } catch {
       return serverError();
     }

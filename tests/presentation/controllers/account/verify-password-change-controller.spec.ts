@@ -131,6 +131,6 @@ describe("Verify Password Change Controller", () => {
     const reponse = await sut.handle({
       body: { _id: "any_id", secret: "any_secret" },
     });
-    expect(reponse).toEqual(ok(""));
+    expect(reponse).toEqual(ok("valid link"));
   });
 });
