@@ -84,4 +84,12 @@ describe("ChangePassword", () => {
     await sut.change(DTO.accountId, DTO.password, "any_request_id");
     expect(spy).toHaveBeenCalledWith("any_request_id");
   });
+  test("should throws if updateToUsed method throws", async () => {
+    const { sut, updateUsedRequest } = makeSut();
+    jest.spyOn(updateUsedRequest, "updateToUsed").mockImplementationOnce(() => {
+      throw new Error();
+    });
+    const response = sut.change(DTO.accountId, DTO.password, "any_request_id");
+    expect(response).rejects.toThrow(new Error());
+  });
 });
