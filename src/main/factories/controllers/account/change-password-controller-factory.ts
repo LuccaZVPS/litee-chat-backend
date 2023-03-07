@@ -1,7 +1,7 @@
 import { ClassValidatorAdapter } from "../../../../infra/utils/class-validator-adapter";
 import { ChangePasswordController } from "../../../../presentation/controllers/account/change-password-controller";
 import { Validator } from "../../../../validation/validator";
-import { makeAccountRepository } from "../../repositories/account-repository";
+import { makeChangePassword } from "../../useCases/account/change-password-factory";
 import { makeFindPasswordChangeRequest } from "../../useCases/account/find-password-change-request-factory";
 
 export const makeChangePasswordController = () => {
@@ -10,6 +10,6 @@ export const makeChangePasswordController = () => {
   return new ChangePasswordController(
     valiadtor,
     makeFindPasswordChangeRequest(),
-    makeAccountRepository()
+    makeChangePassword()
   );
 };
