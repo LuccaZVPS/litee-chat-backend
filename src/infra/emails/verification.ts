@@ -30,7 +30,7 @@ export class SendEmail
       await this.transporter.sendMail({
         from: `Litee Chat" <${process.env.EMAIL_USERNAME}>`, // sender address
         to: email, // list of receivers
-        subject: "Email verification", // Subject line
+        subject: "Change Password", // Subject line
         html: makeVerificationTemplate(
           _id,
           password,
