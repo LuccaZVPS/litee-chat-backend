@@ -45,4 +45,21 @@ describe("ChangePasswordRequest Repository", () => {
       expect(response["accountId"]).toEqual(requestToFind.accountId);
     });
   });
+  describe("UpdateUsedRequestRepository", () => {
+    test("should call findOneAndUpdate with correct value", async () => {
+      const { sut } = makeSut();
+      const spy = jest.spyOn(changePasswordRequestModel, "findOneAndUpdate");
+      await sut.updateToUsed("any_id");
+      expect(spy).toHaveBeenCalledWith(
+        {
+          _id: "any_id",
+        },
+        {
+          $set: {
+            used: true,
+          },
+        }
+      );
+    });
+  });
 });
