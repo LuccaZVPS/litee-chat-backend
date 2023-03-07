@@ -32,14 +32,15 @@ export class AuthenticationController implements Controller {
       if (errors.length > 0) {
         return badRequest(new InvalidBody(errors));
       }
-      const isCorrect = await this.authentication.auth(
+      const account = await this.authentication.auth(
         authenticationDTO.email,
         authenticationDTO.password
       );
-      if (!isCorrect) {
+      if (!account) {
         return unauthorized(new UnauthorizedError());
       }
-      return ok(isCorrect);
+      const { _id, email, friends, imageURL, name, requests } = account;
+      return ok({ _id, email, friends, imageURL, name, requests });
     } catch {
       return serverError();
     }
