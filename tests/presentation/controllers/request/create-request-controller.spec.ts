@@ -66,4 +66,10 @@ describe("CreateRequestController", () => {
     const reponse = await sut.handle(createRequestDTO);
     expect(reponse).toEqual(serverError());
   });
+  test("should call findByEmail with correct value", async () => {
+    const { sut, finByEmailStub } = makeSut();
+    const spy = jest.spyOn(finByEmailStub, "findByEmail");
+    await sut.handle(createRequestDTO);
+    expect(spy).toHaveBeenCalledWith(createRequestDTO.body.email);
+  });
 });

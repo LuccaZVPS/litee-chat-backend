@@ -27,7 +27,7 @@ export class CreateRequestController implements Controller {
       if (errors.length > 0) {
         return badRequest(new InvalidBody(errors));
       }
-
+      await this.findAccountByEmail.findByEmail(createAccoutDTO.email);
       return;
     } catch {
       return serverError();
