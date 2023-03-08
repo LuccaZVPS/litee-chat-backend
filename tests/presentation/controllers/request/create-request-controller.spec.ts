@@ -6,7 +6,10 @@ import {
   Validator,
 } from "../../../../src/presentation/protocols/validator";
 import { faker } from "@faker-js/faker";
-import { badRequest } from "../../../../src/presentation/helpers/http-helper";
+import {
+  badRequest,
+  serverError,
+} from "../../../../src/presentation/helpers/http-helper";
 import { InvalidBody } from "../../../../src/presentation/errors/invalid-body-error";
 describe("CreateRequestController", () => {
   const makeFinByEmailStub = () => {
@@ -50,11 +53,17 @@ describe("CreateRequestController", () => {
     jest.spyOn(validatorStub, "validate").mockImplementationOnce(async () => {
       return { errors: [{ errors: ["any"], field: "any" }] };
     });
-    const reponse = await sut.handle({
-      body: { _id: "any_id", secret: "any_secret" },
-    });
+    const reponse = await sut.handle(createRequestDTO);
     expect(reponse).toEqual(
       badRequest(new InvalidBody([{ errors: ["any"], field: "any" }]))
     );
+  });
+  test("should return serverError if validator throws", async () => {
+    const { sut, validatorStub } = makeSut();
+    jest.spyOn(validatorStub, "validate").mockImplementationOnce(() => {
+      throw new Error();
+    });
+    const reponse = await sut.handle(createRequestDTO);
+    expect(reponse).toEqual(serverError());
   });
 });

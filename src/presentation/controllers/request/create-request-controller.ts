@@ -1,6 +1,6 @@
 import { FindAccountByEmail } from "../../../domain/useCases/account/find-account-by-email";
 import { InvalidBody } from "../../errors/invalid-body-error";
-import { badRequest } from "../../helpers/http-helper";
+import { badRequest, serverError } from "../../helpers/http-helper";
 import {
   Controller,
   HttpRequest,
@@ -15,17 +15,22 @@ export class CreateRequestController implements Controller {
     private readonly findAccountByEmail: FindAccountByEmail
   ) {}
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
-    const createAccoutDTO = new CreateRequestDTO();
-    for (const prop in createAccoutDTO) {
-      if (httpRequest?.body[prop]) {
-        createAccoutDTO[prop] = httpRequest.body[prop];
+    try {
+      const createAccoutDTO = new CreateRequestDTO();
+      for (const prop in createAccoutDTO) {
+        if (httpRequest?.body[prop]) {
+          createAccoutDTO[prop] = httpRequest.body[prop];
+        }
       }
-    }
-    const { errors } = await this.validator.validate(createAccoutDTO);
-    if (errors.length > 0) {
-      return badRequest(new InvalidBody(errors));
-    }
+      const { errors } = await this.validator.validate(createAccoutDTO);
+      console.log(errors);
+      if (errors.length > 0) {
+        return badRequest(new InvalidBody(errors));
+      }
 
-    return;
+      return;
+    } catch {
+      return serverError();
+    }
   }
 }
