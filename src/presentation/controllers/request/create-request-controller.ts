@@ -1,4 +1,6 @@
 import { FindAccountByEmail } from "../../../domain/useCases/account/find-account-by-email";
+import { InvalidBody } from "../../errors/invalid-body-error";
+import { badRequest } from "../../helpers/http-helper";
 import {
   Controller,
   HttpRequest,
@@ -20,6 +22,9 @@ export class CreateRequestController implements Controller {
       }
     }
     const { errors } = await this.validator.validate(createAccoutDTO);
+    if (errors.length > 0) {
+      return badRequest(new InvalidBody(errors));
+    }
 
     return;
   }
