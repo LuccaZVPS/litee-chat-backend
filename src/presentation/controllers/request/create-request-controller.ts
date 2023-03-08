@@ -1,7 +1,12 @@
 import { FindAccountByEmail } from "../../../domain/useCases/account/find-account-by-email";
 import { CreateRequest } from "../../../domain/useCases/request/create-request";
 import { InvalidBody } from "../../errors/invalid-body-error";
-import { badRequest, notFound, serverError } from "../../helpers/http-helper";
+import {
+  badRequest,
+  conflict,
+  notFound,
+  serverError,
+} from "../../helpers/http-helper";
 import {
   Controller,
   HttpRequest,
@@ -35,7 +40,7 @@ export class CreateRequestController implements Controller {
       if (!accountFound || !accountFound?._id) {
         return notFound("account not found");
       }
-      await this.createRequest.create({
+      const created = await this.createRequest.create({
         from: httpRequest.account?._id,
         to: {
           _id: accountFound._id,
@@ -43,6 +48,9 @@ export class CreateRequestController implements Controller {
           friendList: accountFound.friends,
         },
       });
+      if (!created) {
+        return conflict("request already sent");
+      }
       return;
     } catch {
       return serverError();

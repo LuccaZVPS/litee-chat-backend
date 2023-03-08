@@ -8,6 +8,7 @@ import {
 import { faker } from "@faker-js/faker";
 import {
   badRequest,
+  conflict,
   notFound,
   serverError,
 } from "../../../../src/presentation/helpers/http-helper";
@@ -125,5 +126,13 @@ describe("CreateRequestController", () => {
         requests: [],
       },
     });
+  });
+  test("should return conflict if createRequest returns false", async () => {
+    const { sut, createRequestStub } = makeSut();
+    jest.spyOn(createRequestStub, "create").mockImplementationOnce(async () => {
+      return false;
+    });
+    const reponse = await sut.handle(createRequestDTO);
+    expect(reponse).toEqual(conflict("request already sent"));
   });
 });
