@@ -8,14 +8,16 @@ import {
 import { faker } from "@faker-js/faker";
 import {
   badRequest,
+  notFound,
   serverError,
 } from "../../../../src/presentation/helpers/http-helper";
 import { InvalidBody } from "../../../../src/presentation/errors/invalid-body-error";
+import { anyAccount } from "../account/mocks/fake-account";
 describe("CreateRequestController", () => {
   const makeFinByEmailStub = () => {
     class FindByEmailStub implements FindAccountByEmail {
       async findByEmail(): Promise<AccountModel | void> {
-        return;
+        return anyAccount;
       }
     }
     return new FindByEmailStub();
@@ -71,5 +73,15 @@ describe("CreateRequestController", () => {
     const spy = jest.spyOn(finByEmailStub, "findByEmail");
     await sut.handle(createRequestDTO);
     expect(spy).toHaveBeenCalledWith(createRequestDTO.body.email);
+  });
+  test("should return notFound if findByEmail returns void", async () => {
+    const { sut, finByEmailStub } = makeSut();
+    jest
+      .spyOn(finByEmailStub, "findByEmail")
+      .mockImplementationOnce(async () => {
+        return;
+      });
+    const response = await sut.handle(createRequestDTO);
+    expect(response).toEqual(notFound("account not found"));
   });
 });

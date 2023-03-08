@@ -1,6 +1,6 @@
 import { FindAccountByEmail } from "../../../domain/useCases/account/find-account-by-email";
 import { InvalidBody } from "../../errors/invalid-body-error";
-import { badRequest, serverError } from "../../helpers/http-helper";
+import { badRequest, notFound, serverError } from "../../helpers/http-helper";
 import {
   Controller,
   HttpRequest,
@@ -27,7 +27,12 @@ export class CreateRequestController implements Controller {
       if (errors.length > 0) {
         return badRequest(new InvalidBody(errors));
       }
-      await this.findAccountByEmail.findByEmail(createAccoutDTO.email);
+      const accountFound = await this.findAccountByEmail.findByEmail(
+        createAccoutDTO.email
+      );
+      if (!accountFound || !accountFound?._id) {
+        return notFound("account not found");
+      }
       return;
     } catch {
       return serverError();
