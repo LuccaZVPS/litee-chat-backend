@@ -1,4 +1,5 @@
 import { FindAccountByEmail } from "../../../domain/useCases/account/find-account-by-email";
+import { CreateRequest } from "../../../domain/useCases/request/create-request";
 import { InvalidBody } from "../../errors/invalid-body-error";
 import { badRequest, notFound, serverError } from "../../helpers/http-helper";
 import {
@@ -12,7 +13,8 @@ import { CreateRequestDTO } from "./DTOs/create-request-DTO";
 export class CreateRequestController implements Controller {
   constructor(
     private readonly validator: Validator,
-    private readonly findAccountByEmail: FindAccountByEmail
+    private readonly findAccountByEmail: FindAccountByEmail,
+    private readonly createRequest: CreateRequest
   ) {}
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
@@ -33,6 +35,14 @@ export class CreateRequestController implements Controller {
       if (!accountFound || !accountFound?._id) {
         return notFound("account not found");
       }
+      await this.createRequest.create({
+        from: httpRequest.account?._id,
+        to: {
+          _id: accountFound._id,
+          requests: accountFound.requests,
+          friendList: accountFound.friends,
+        },
+      });
       return;
     } catch {
       return serverError();

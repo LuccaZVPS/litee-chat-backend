@@ -13,11 +13,13 @@ import {
 } from "../../../../src/presentation/helpers/http-helper";
 import { InvalidBody } from "../../../../src/presentation/errors/invalid-body-error";
 import { anyAccount } from "../account/mocks/fake-account";
+import { CreateRequest } from "../../../../src/domain/useCases/request/create-request";
 describe("CreateRequestController", () => {
+  const fakeAccount = anyAccount;
   const makeFinByEmailStub = () => {
     class FindByEmailStub implements FindAccountByEmail {
       async findByEmail(): Promise<AccountModel | void> {
-        return anyAccount;
+        return fakeAccount;
       }
     }
     return new FindByEmailStub();
@@ -30,25 +32,42 @@ describe("CreateRequestController", () => {
     }
     return new ValidatorStub();
   };
+  const makeCreateRequest = () => {
+    class CreateRequestStub implements CreateRequest {
+      async create(): Promise<boolean> {
+        return true;
+      }
+    }
+    return new CreateRequestStub();
+  };
   const makeSut = () => {
     const validatorStub = makeValidatorStub();
     const finByEmailStub = makeFinByEmailStub();
+    const createRequestStub = makeCreateRequest();
     return {
       validatorStub,
       finByEmailStub,
-      sut: new CreateRequestController(validatorStub, finByEmailStub),
+      createRequestStub,
+      sut: new CreateRequestController(
+        validatorStub,
+        finByEmailStub,
+        createRequestStub
+      ),
     };
   };
   const createRequestDTO = {
     body: {
       email: faker.internet.email(),
+      account: {
+        _id: "any_id",
+      },
     },
   };
   test("should call validator with correct value", async () => {
     const { sut, validatorStub } = makeSut();
     const spy = jest.spyOn(validatorStub, "validate");
     await sut.handle(createRequestDTO);
-    expect(spy).toHaveBeenCalledWith({ ...createRequestDTO.body });
+    expect(spy).toHaveBeenCalledWith({ email: createRequestDTO.body.email });
   });
   test("should return badRequest if validate return errors", async () => {
     const { sut, validatorStub } = makeSut();
@@ -93,5 +112,18 @@ describe("CreateRequestController", () => {
       });
     const response = await sut.handle(createRequestDTO);
     expect(response).toEqual(serverError());
+  });
+  test("should call createRequest with correct values", async () => {
+    const { sut, createRequestStub } = makeSut();
+    const spy = jest.spyOn(createRequestStub, "create");
+    await sut.handle(createRequestDTO);
+    expect(spy).toHaveBeenCalledWith({
+      from: undefined,
+      to: {
+        _id: fakeAccount._id,
+        friendList: [],
+        requests: [],
+      },
+    });
   });
 });
