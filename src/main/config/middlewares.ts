@@ -1,5 +1,6 @@
 import { Express, urlencoded, json, static as staticExpress } from "express";
 import fileUpload from "express-fileupload";
+import { makeRateLimit } from "./rate-limit";
 export default (app: Express) => {
   app.use(json());
   app.use(urlencoded({ extended: true }));
@@ -15,4 +16,8 @@ export default (app: Express) => {
       abortOnLimit: true,
     })
   );
+  app.use("/api/account/login", makeRateLimit(10, 60));
+  app.use("/api/account/image", makeRateLimit(5, 60));
+  app.use("/api/account/signup", makeRateLimit(10, 60));
+  app.use("/api/account/change-password", makeRateLimit(5, 300));
 };
