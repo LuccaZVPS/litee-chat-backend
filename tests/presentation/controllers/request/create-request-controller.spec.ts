@@ -135,4 +135,12 @@ describe("CreateRequestController", () => {
     const reponse = await sut.handle(createRequestDTO);
     expect(reponse).toEqual(conflict("request already sent"));
   });
+  test("should return serverError if createRequest throws", async () => {
+    const { sut, createRequestStub } = makeSut();
+    jest.spyOn(createRequestStub, "create").mockImplementationOnce(() => {
+      throw new Error();
+    });
+    const reponse = await sut.handle(createRequestDTO);
+    expect(reponse).toEqual(serverError());
+  });
 });
