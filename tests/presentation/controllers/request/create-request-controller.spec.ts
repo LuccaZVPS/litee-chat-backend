@@ -10,6 +10,7 @@ import {
   badRequest,
   conflict,
   notFound,
+  ok,
   serverError,
 } from "../../../../src/presentation/helpers/http-helper";
 import { InvalidBody } from "../../../../src/presentation/errors/invalid-body-error";
@@ -142,5 +143,10 @@ describe("CreateRequestController", () => {
     });
     const reponse = await sut.handle(createRequestDTO);
     expect(reponse).toEqual(serverError());
+  });
+  test("should return 200 if createRequest returns true", async () => {
+    const { sut } = makeSut();
+    const reponse = await sut.handle(createRequestDTO);
+    expect(reponse).toEqual(ok("request sent"));
   });
 });

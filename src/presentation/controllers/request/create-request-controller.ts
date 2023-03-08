@@ -5,6 +5,7 @@ import {
   badRequest,
   conflict,
   notFound,
+  ok,
   serverError,
 } from "../../helpers/http-helper";
 import {
@@ -30,7 +31,6 @@ export class CreateRequestController implements Controller {
         }
       }
       const { errors } = await this.validator.validate(createAccoutDTO);
-      console.log(errors);
       if (errors.length > 0) {
         return badRequest(new InvalidBody(errors));
       }
@@ -51,7 +51,7 @@ export class CreateRequestController implements Controller {
       if (!created) {
         return conflict("request already sent");
       }
-      return;
+      return ok("request sent");
     } catch {
       return serverError();
     }
