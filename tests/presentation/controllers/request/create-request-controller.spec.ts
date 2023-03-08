@@ -84,4 +84,14 @@ describe("CreateRequestController", () => {
     const response = await sut.handle(createRequestDTO);
     expect(response).toEqual(notFound("account not found"));
   });
+  test("should return server error if findByEmail throws", async () => {
+    const { sut, finByEmailStub } = makeSut();
+    jest
+      .spyOn(finByEmailStub, "findByEmail")
+      .mockImplementationOnce(async () => {
+        throw new Error();
+      });
+    const response = await sut.handle(createRequestDTO);
+    expect(response).toEqual(serverError());
+  });
 });
